@@ -2,18 +2,11 @@ import React from "react";
 import cx from "classnames";
 import PropTypes from "prop-types";
 import { Switch, Route } from "react-router-dom";
-// creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
-
-// @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-
-// core components
 import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
-// import Footer from "components/Footer/Footer.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
-// import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
 
 import routes from "routes.js";
 
@@ -39,9 +32,7 @@ class Dashboard extends React.Component {
     this.resizeFunction = this.resizeFunction.bind(this);
   }
   componentDidMount() {
-    
-    if(localStorage.getItem('access_token') === null)
-    {
+    if (localStorage.getItem("access_token") === null) {
       this.props.history.push("/auth/login");
     }
     if (navigator.platform.indexOf("Win") > -1) {
