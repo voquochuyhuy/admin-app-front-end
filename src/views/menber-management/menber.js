@@ -296,7 +296,7 @@ export default function Menber() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    axios.get("https://test-deploy-express.herokuapp.com/user-admin/admin-list").then((res) => {
+    axios.get("https://test-deploy-express.herokuapp.com/admin/admin-list").then((res) => {
       const data = res.data.data;
       setRows(data);
     });

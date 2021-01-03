@@ -242,7 +242,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function User() {
+export default function Report() {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -304,7 +304,7 @@ export default function User() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    axios.get("https://test-deploy-express.herokuapp.com/admin/user-list").then((res) => {
+    axios.get("https://test-deploy-express.herokuapp.com/admin/bad-posts").then((res) => {
       const data = res.data.data;
       setRows(data);
     });
