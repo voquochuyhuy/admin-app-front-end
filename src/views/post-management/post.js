@@ -304,7 +304,7 @@ export default function Post() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    axios.get("http://localhost:3000/user-admin/api/bad-posts").then((res) => {
+    axios.get("https://test-deploy-express.herokuapp.com/user-admin/bad-posts").then((res) => {
       const data = res.data.data;
       setRows(data);
     });

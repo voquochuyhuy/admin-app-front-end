@@ -304,7 +304,7 @@ export default function User() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    axios.get("http://localhost:3000/user-admin/api/user-list").then((res) => {
+    axios.get("https://test-deploy-express.herokuapp.com/user-admin/user-list").then((res) => {
       const data = res.data.data;
       setRows(data);
     });

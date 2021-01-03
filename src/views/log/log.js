@@ -295,7 +295,7 @@ export default function Log() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    axios.get("http://localhost:3000/log/api").then((res) => {
+    axios.get("https://test-deploy-express.herokuapp.com/log").then((res) => {
       const data = res.data.data;
       setRows(data);
     });
