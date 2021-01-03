@@ -5,6 +5,9 @@ const Auth = ()=>{
     useEffect(() => {
         return () => {
         }
-    }, [])
+    }, []);
+    const submit = () => {
+
+    }
     return <>auth</>
 }

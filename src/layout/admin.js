@@ -1,8 +1,26 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import routes from "../routes";
 const Admin = ()=>{
     let history = useHistory();
+    const getRoutes = routes => {
+        return routes.map((prop, key) => {
+          if (prop.collapse) {
+            return this.getRoutes(prop.views);
+          }
+          if (prop.layout === "/admin") {
+            return (
+              <Route
+                path={prop.layout + prop.path}
+                component={prop.component}
+                key={key}
+              />
+            );
+          } else {
+            return null;
+          }
+        });
+    }
     useEffect(() => {
         if(localStorage.getItem("access_token") === null){
             history.push("/auth")
@@ -10,5 +28,5 @@ const Admin = ()=>{
         return () => {
         }
     }, [])
-    return <>admin</>
+    return <> <Switch>{getRoutes(routes)}</Switch></>
 }
