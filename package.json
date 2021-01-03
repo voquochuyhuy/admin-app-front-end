@@ -36,8 +36,8 @@
     "react-use": "^13.1.0"
   },
   "scripts": {
-    "start": "set PORT=3005 && react-scripts start",
-    "build": "set PORT=3005 && react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "deploy": "npm run build",
