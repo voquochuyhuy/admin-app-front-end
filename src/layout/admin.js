@@ -30,3 +30,4 @@ const Admin = ()=>{
     }, [])
     return <> <Switch>{getRoutes(routes)}</Switch></>
 }
+export default Admin;
