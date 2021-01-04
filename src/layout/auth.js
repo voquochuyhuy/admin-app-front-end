@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, TextField } from "@material-ui/core";
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import "../styles/auth.css";
 const Auth = (props) => {
   useEffect(() => {
@@ -12,14 +14,21 @@ const Auth = (props) => {
     <div className="auth-page">
       <form noValidate autoComplete="off">
         <div className="header">
-          <h2>Together better admin app</h2>
+          <h2>Together better</h2>
         </div>
         <div className="content">
-          <TextField id="email" label="email" />
-          <TextField id="password" label="password" />
+          <div className="email">
+            <MailOutlineIcon/>
+            <TextField id="email" label="Enter email" variant="outlined"/>
+          </div>
+          <div class="password">
+            <LockOpenIcon />
+            <TextField id="password" label="Enter password" variant="outlined" />
+          </div>
+          
         </div>
         <div className="footer">
-          <Button onClick={submit}>Login</Button>
+          <Button variant="contained" color="primary" onClick={submit}>Login</Button>
         </div>
       </form>
     </div>

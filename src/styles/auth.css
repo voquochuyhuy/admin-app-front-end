@@ -9,7 +9,7 @@
 .auth-page form{
     height: 300px;
     width: 400px;
-    background-color: white;
+    background-color: blanchedalmond;
 }
 .auth-page form div{
     width: 100%;
@@ -22,15 +22,41 @@
 }
 .auth-page form .header h2{
     margin: 0;
+    color: blueviolet;
 }
 .auth-page form .content{
     height: 50%;
-    padding: 0px 16px 0px 16px;
-    width: 368px;
+    padding: 0px 20px 0px 20px;
+    width: 360px;
+}
+.auth-page form .content .email{
+    align-items: center;
+    align-items: center;
+    display: flex;
+}
+.auth-page form .content .email .MuiSvgIcon-root{
+    font-size: 23px;
+}
+.auth-page form .content .email svg{
+    margin-right: 10px;
+}
+.auth-page form .content .password{
+    align-items: center;
+    display: flex;
+    margin-top: 6%;
+}
+.auth-page form .content .password .MuiSvgIcon-root{
+    font-size: 23px;
+}
+.auth-page form .content .password svg{
+    margin-right: 10px;
 }
 .auth-page form .footer{
     display: flex;
     justify-content: center;
     align-items: center;
     height: 25%;
+}
+.auth-page form .footer button{
+    width: 165px;
 }
