@@ -2,7 +2,7 @@ import Post from "./views/post-management/post";
 import Log from "./views/log/log";
 import User from "./views/user-management/user";
 import Menber from "./views/menber-management/menber";
-
+import Report from "./views/report/report"
 var dashRoutes = [
   {
     path: "/post-management",
@@ -30,6 +30,13 @@ var dashRoutes = [
     name: "Log",
     // icon: CalendarToday,
     component: Log,
+    layout: ""
+  },
+  {
+    path: "/report",
+    name: "Report",
+    // icon: CalendarToday,
+    component: Report,
     layout: ""
   }
 ];

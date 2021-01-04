@@ -3,11 +3,11 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import routes from "../routes";
 const Admin = (props)=>{
     const getRoutes = routes => {
-        return routes.map((prop, key) => {
+        const result = routes.map((prop, key) => {
           if (prop.collapse) {
-            return this.getRoutes(prop.views);
+            return getRoutes(prop.views);
           }
-          if (prop.layout === "/admin") {
+          if (prop.layout === "") {
             return (
               <Route
                 path={prop.layout + prop.path}
@@ -19,6 +19,7 @@ const Admin = (props)=>{
             return null;
           }
         });
+        return result;
     }
     useEffect(() => {
         if(localStorage.getItem("access_token") === null){
