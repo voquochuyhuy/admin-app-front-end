@@ -20,10 +20,11 @@ const Auth = (props) => {
       },
     })
       .then(async (res) => {
+        console.log(res)
         let token = res.data.accessToken;
         axios.defaults.headers.common["Authorization"] = res.data.accessToken;
         localStorage.setItem("access_token", token);
-        this.props.history.push("/log-management");
+        props.history.push("/log");
       })
       .catch((error) => {
         if (error.message === "Network Error") {

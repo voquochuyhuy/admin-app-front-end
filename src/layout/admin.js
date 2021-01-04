@@ -25,6 +25,7 @@ const Admin = (props)=>{
         if(localStorage.getItem("access_token") === null){
             props.history.push("/auth")
         }
+        else props.history.push("/log")
         return () => {
         }
     }, [])
