@@ -1,0 +1,36 @@
+.auth-page{
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    align-items: center;
+    background-image: url("./bg-pricing.jpeg");
+}
+.auth-page form{
+    height: 300px;
+    width: 400px;
+    background-color: white;
+}
+.auth-page form div{
+    width: 100%;
+}
+.auth-page form .header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25%;
+}
+.auth-page form .header h2{
+    margin: 0;
+}
+.auth-page form .content{
+    height: 50%;
+    padding: 0px 16px 0px 16px;
+    width: 368px;
+}
+.auth-page form .footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25%;
+}
