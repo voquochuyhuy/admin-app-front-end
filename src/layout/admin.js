@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailIcon from '@material-ui/icons/Mail';
 import routes from "../routes";
 import "../styles/admin.css";
@@ -106,7 +106,7 @@ const Admin = (props) => {
               )}
               <Divider/>
               <ListItem button onClick={Logout}>
-                <ListItemIcon> <MailIcon/></ListItemIcon>
+                <ListItemIcon> <ExitToAppIcon/></ListItemIcon>
                 <ListItemText primary='Logout' />
               </ListItem>
             </List>

@@ -371,7 +371,7 @@ export default function User() {
                       <TableCell align="right">{row.username}</TableCell>
                       <TableCell align="right">{row.points}</TableCell>
                       <TableCell align="right">{row.country}</TableCell>
-                      <TableCell align="right">{moment(row.createdAt).format("dd-mm-yyyy hh:mm:ss")}</TableCell>
+                      <TableCell align="right">{moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}</TableCell>
                     </TableRow>
                   );
                 })}

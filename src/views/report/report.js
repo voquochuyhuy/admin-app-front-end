@@ -74,17 +74,17 @@ const headCells = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Email",
+    label: "Report message",
   },
-  { id: "calories", numeric: true, disablePadding: false, label: "Tên" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Điểm" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Quốc gia" },
-  {
-    id: "protein",
-    numeric: true,
-    disablePadding: false,
-    label: "Ngày khởi tạo",
-  },
+  { id: "calories", numeric: true, disablePadding: false, label: "Reporter" },
+  { id: "fat", numeric: true, disablePadding: false, label: "Created at" },
+  { id: "carbs", numeric: true, disablePadding: false, label: "Post Id" },
+  // {
+  //   id: "protein",
+  //   numeric: true,
+  //   disablePadding: false,
+  //   label: "Ngày khởi tạo",
+  // },
 ];
 
 function EnhancedTableHead(props) {
@@ -311,6 +311,7 @@ export default function Report() {
         .get("https://test-deploy-express.herokuapp.com/admin/bad-posts")
         .then((res) => {
           const data = res.data.data;
+          console.log(data,"bad-posts");
           setRows(data);
         });
       HideLoadingIcon(); 
@@ -368,12 +369,13 @@ export default function Report() {
                         scope="row"
                         padding="none"
                       >
-                        {row.email}
+                        {row.message}
                       </TableCell>
                       <TableCell align="right">{row.username}</TableCell>
-                      <TableCell align="right">{row.points}</TableCell>
-                      <TableCell align="right">{row.country}</TableCell>
-                      <TableCell align="right">{moment(row.createdAt).format("dd-mm-yyyy hh:mm:ss")}</TableCell>
+                      {/* <TableCell align="right">{row.points}</TableCell>
+                      <TableCell align="right">{row.country}</TableCell> */}
+                      <TableCell align="right">{moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}</TableCell>
+                      <TableCell align="right">{row.postID}</TableCell> 
                     </TableRow>
                   );
                 })}

@@ -74,17 +74,17 @@ const headCells = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Tiêu đề"
+    label: "Question Type"
   },
-  { id: "calories", numeric: true, disablePadding: false, label: "Tên" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Số lượt vote" },
+  { id: "calories", numeric: true, disablePadding: false, label: "Content" },
+  { id: "fat", numeric: true, disablePadding: false, label: "Votes" },
   {
     id: "carbs",
     numeric: true,
     disablePadding: false,
-    label: "Nội dung báo cáo"
+    label: "Created At"
   },
-  { id: "protein", numeric: true, disablePadding: false, label: "Thời gian" }
+  { id: "protein", numeric: true, disablePadding: false, label: "Updated At" }
 ];
 
 function EnhancedTableHead(props) {
@@ -310,7 +310,6 @@ export default function Post() {
       ShowLoadingIcon();
       await axios.get("https://test-deploy-express.herokuapp.com/question").then((res) => {
       const data = res.data.data;
-      console.log(data)
       setRows(data);
       HideLoadingIcon(); 
     });
@@ -368,12 +367,12 @@ export default function Post() {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {row.questionType}
                       </TableCell>
-                      <TableCell align="right">{row.username}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.message}</TableCell>
-                      <TableCell align="right">{moment(row.createdAt).format("dd-mm-yyyy hh:mm:ss")}</TableCell>
+                      <TableCell align="right">{row.content}</TableCell>
+                      <TableCell align="right">{+row.votes}</TableCell>
+                      <TableCell align="right">{moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}</TableCell>
+                      <TableCell align="right">{moment(row.updatedAt).format("DD-MM-YYYY hh:mm:ss")}</TableCell>
                     </TableRow>
                   );
                 })}
