@@ -10,6 +10,8 @@
     height: 300px;
     width: 400px;
     background-color: blanchedalmond;
+    border-radius: 16px;
+    box-shadow: 5px 5px coral;
 }
 .auth-page form div{
     width: 100%;
@@ -22,7 +24,7 @@
 }
 .auth-page form .header h2{
     margin: 0;
-    color: blueviolet;
+    color: coral;
 }
 .auth-page form .content{
     height: 50%;

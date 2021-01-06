@@ -20,8 +20,9 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import moment from "moment";
 import axios from 'axios';
-
+import {ShowLoadingIcon,HideLoadingIcon} from "../../global/globalFunction";
 // function createData(name, calories, fat, carbs, protein) {
 //   return { name, calories, fat, carbs, protein };
 // }
@@ -304,10 +305,16 @@ export default function User() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    axios.get("https://test-deploy-express.herokuapp.com/admin/user-list").then((res) => {
+    async function fetchData (){
+      ShowLoadingIcon();
+      await axios.get("https://test-deploy-express.herokuapp.com/admin/user-list").then((res) => {
       const data = res.data.data;
       setRows(data);
+      HideLoadingIcon(); 
     });
+    }
+    fetchData();
+    
     return () => {};
   }, []);
   return (
@@ -364,7 +371,7 @@ export default function User() {
                       <TableCell align="right">{row.username}</TableCell>
                       <TableCell align="right">{row.points}</TableCell>
                       <TableCell align="right">{row.country}</TableCell>
-                      <TableCell align="right">{row.createdAt}</TableCell>
+                      <TableCell align="right">{moment(row.createdAt).format("dd-mm-yyyy hh:mm:ss")}</TableCell>
                     </TableRow>
                   );
                 })}

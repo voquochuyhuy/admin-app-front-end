@@ -2,40 +2,42 @@ import Post from "./views/post-management/post";
 import Log from "./views/log/log";
 import User from "./views/user-management/user";
 import Menber from "./views/menber-management/menber";
-import Report from "./views/report/report"
+import Report from "./views/report/report";
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import { AccountBalance, CalendarToday, Event, LaptopChromebook } from "@material-ui/icons";
 var dashRoutes = [
   {
     path: "/post-management",
-    name: "Quản lí bài viết",
-    // icon: Event,
+    name: "Question",
+    icon: <Event/>,
     component: Post,
     layout: ""
   },
   {
     path: "/user-management",
-    name: "Quản lí người dùng",
-    // icon: AccountBalance,
+    name: "User",
+    icon: <AccountBalance/>,
     component: User,
     layout: ""
   },
   {
     path: "/member-management",
-    name: "Quản lí thành viên",
-    // icon: LaptopChromebook,
+    name: "Member",
+    icon: <LaptopChromebook/>,
     component: Menber,
     layout: ""
   },
   {
     path: "/log",
     name: "Log",
-    // icon: CalendarToday,
+    icon: <InboxIcon/>,
     component: Log,
     layout: ""
   },
   {
     path: "/report",
     name: "Report",
-    // icon: CalendarToday,
+    icon: <CalendarToday/>,
     component: Report,
     layout: ""
   }

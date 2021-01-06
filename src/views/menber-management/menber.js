@@ -19,7 +19,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import axios from "axios";
-
+import {ShowLoadingIcon,HideLoadingIcon} from "../../global/globalFunction";
 // function createData(name, calories, fat, carbs, protein) {
 //   return { name, calories, fat, carbs, protein };
 // }
@@ -296,10 +296,16 @@ export default function Menber() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    axios.get("https://test-deploy-express.herokuapp.com/admin/admin-list").then((res) => {
+    async function fetchData (){
+      ShowLoadingIcon();
+      await axios.get("https://test-deploy-express.herokuapp.com/admin/admin-list").then((res) => {
       const data = res.data.data;
       setRows(data);
+      HideLoadingIcon(); 
     });
+    }
+    fetchData();
+    
     return () => {};
   }, []);
   return (

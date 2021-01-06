@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, TextField } from "@material-ui/core";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
+import {ShowLoadingIcon,HideLoadingIcon} from "../global/globalFunction";
 import "../styles/auth.css";
 import axios from "axios";
 const Auth = (props) => {
@@ -10,8 +11,9 @@ const Auth = (props) => {
   useEffect(() => {
     return () => {};
   }, []);
-  const submit = () => {
-    axios({
+  const submit = async () => {
+    ShowLoadingIcon();
+    await axios({
       method: "post",
       url: `https://test-deploy-express.herokuapp.com/auth/login`,
       data: {
@@ -20,11 +22,11 @@ const Auth = (props) => {
       },
     })
       .then(async (res) => {
-        console.log(res)
+        HideLoadingIcon(); 
         let token = res.data.accessToken;
         axios.defaults.headers.common["Authorization"] = res.data.accessToken;
         localStorage.setItem("access_token", token);
-        props.history.push("/log");
+        props.history.push("/post-management");
       })
       .catch((error) => {
         if (error.message === "Network Error") {
@@ -32,7 +34,9 @@ const Auth = (props) => {
           return;
         }
         alert(`Email or password is not valid`);
+        HideLoadingIcon();  
       });
+    
   };
   const handleChangeTextField = (e, type) => {
     switch (type) {

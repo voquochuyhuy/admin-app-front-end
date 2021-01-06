@@ -20,8 +20,9 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import axios from 'axios';
-
+import moment from "moment";
+import axios from "axios";
+import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
 // function createData(name, calories, fat, carbs, protein) {
 //   return { name, calories, fat, carbs, protein };
 // }
@@ -250,7 +251,7 @@ export default function Report() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rows,setRows] = React.useState([]);
+  const [rows, setRows] = React.useState([]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -304,10 +305,18 @@ export default function Report() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    axios.get("https://test-deploy-express.herokuapp.com/admin/bad-posts").then((res) => {
-      const data = res.data.data;
-      setRows(data);
-    });
+    async function fetchData() {
+      ShowLoadingIcon();
+      await axios
+        .get("https://test-deploy-express.herokuapp.com/admin/bad-posts")
+        .then((res) => {
+          const data = res.data.data;
+          setRows(data);
+        });
+      HideLoadingIcon(); 
+    }
+    fetchData();
+
     return () => {};
   }, []);
   return (
@@ -364,7 +373,7 @@ export default function Report() {
                       <TableCell align="right">{row.username}</TableCell>
                       <TableCell align="right">{row.points}</TableCell>
                       <TableCell align="right">{row.country}</TableCell>
-                      <TableCell align="right">{row.createdAt}</TableCell>
+                      <TableCell align="right">{moment(row.createdAt).format("dd-mm-yyyy hh:mm:ss")}</TableCell>
                     </TableRow>
                   );
                 })}
