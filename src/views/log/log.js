@@ -287,9 +287,6 @@ export default function Log() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
