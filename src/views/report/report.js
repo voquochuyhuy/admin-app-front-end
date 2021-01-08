@@ -49,15 +49,15 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
+  { id: "content", numeric: false, disablePadding: false, label: "Content" },
   {
     id: "name",
     numeric: false,
     disablePadding: true,
     label: "Report message",
   },
-  { id: "calories", numeric: true, disablePadding: false, label: "Reporter" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Created at" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Post Id" },
+  { id: "calories", numeric: false, disablePadding: false, label: "Reporter" },
+  { id: "fat", numeric: false, disablePadding: false, label: "Created at" },
   // {
   //   id: "protein",
   //   numeric: true,
@@ -94,7 +94,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            align="left"
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -275,10 +275,6 @@ export default function Report() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
@@ -287,13 +283,12 @@ export default function Report() {
     async function fetchData() {
       ShowLoadingIcon();
       await axios
-        .get("https://test-deploy-express.herokuapp.com/admin/bad-posts")
+        .get("https://test-deploy-express.herokuapp.com/report")
         .then((res) => {
           const data = res.data.data;
-          console.log(data,"bad-posts");
           setRows(data);
         });
-      HideLoadingIcon(); 
+      HideLoadingIcon();
     }
     fetchData();
 
@@ -323,13 +318,13 @@ export default function Report() {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -342,19 +337,22 @@ export default function Report() {
                           inputProps={{ "aria-labelledby": labelId }}
                         />
                       </TableCell>
+                      <TableCell align="left">{row.content}</TableCell>
+
                       <TableCell
                         component="th"
                         id={labelId}
                         scope="row"
                         padding="none"
+                        align="left"
                       >
                         {row.message}
                       </TableCell>
-                      <TableCell align="right">{row.username}</TableCell>
-                      {/* <TableCell align="right">{row.points}</TableCell>
-                      <TableCell align="right">{row.country}</TableCell> */}
-                      <TableCell align="right">{moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}</TableCell>
-                      <TableCell align="right">{row.postID}</TableCell> 
+
+                      <TableCell align="left">{row.username}</TableCell>
+                      <TableCell align="left">
+                        {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
+                      </TableCell>
                     </TableRow>
                   );
                 })}

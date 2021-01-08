@@ -16,13 +16,12 @@ import Paper from "@material-ui/core/Paper";
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import moment from "moment";
-import axios from 'axios';
-import {ShowLoadingIcon,HideLoadingIcon} from "../../global/globalFunction";
+import axios from "axios";
+import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
+import { Button, Switch } from "@material-ui/core";
 // function createData(name, calories, fat, carbs, protein) {
 //   return { name, calories, fat, carbs, protein };
 // }
@@ -85,6 +84,7 @@ const headCells = [
     disablePadding: false,
     label: "Ngày khởi tạo",
   },
+  { id: "carbs", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 function EnhancedTableHead(props) {
@@ -200,7 +200,7 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
+          <IconButton onClick={props.handleClickDelete} aria-label="delete">
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -251,7 +251,7 @@ export default function User() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rows,setRows] = React.useState([]);
+  const [rows, setRows] = React.useState([]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -295,32 +295,65 @@ export default function User() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
+  const handleChangeStatus = async (e, row) => {
+    const newState = rows.map((it) => {
+      const pIt = { ...it };
+      if (pIt.id === row.id) {
+        pIt.status = pIt.status === "deactive" ? "active" : "deactive";
+      }
+      return pIt;
+    });
+    const selectedItem = newState.filter((it) => it.id === row.id);
+    ShowLoadingIcon();
+    await axios
+      .put("https://test-deploy-express.herokuapp.com/user", {
+        id: selectedItem[0].id,
+        status: selectedItem[0].status,
+      })
+      .then((res) => {
+        setRows(newState);
+        HideLoadingIcon();
+      })
+      .catch((err) => {
+        HideLoadingIcon();
+      });
   };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
-
+  const handleClickDelete = async () => {
+    ShowLoadingIcon();
+    await axios
+      .delete("https://test-deploy-express.herokuapp.com/user/multi-delete", {
+        ids : selected.toString()
+      })
+      .then((res) => {
+        fetchData();
+      })
+      .catch((err) => {
+        HideLoadingIcon();
+      });
+  };
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const fetchData = async () => {
+    ShowLoadingIcon();
+    await axios
+      .get("https://test-deploy-express.herokuapp.com/admin/user-list")
+      .then((res) => {
+        const data = res.data.data;
+        setRows(data);
+        HideLoadingIcon();
+      });
+  };
   useEffect(() => {
-    async function fetchData (){
-      ShowLoadingIcon();
-      await axios.get("https://test-deploy-express.herokuapp.com/admin/user-list").then((res) => {
-      const data = res.data.data;
-      setRows(data);
-      HideLoadingIcon(); 
-    });
-    }
     fetchData();
-    
+
     return () => {};
   }, []);
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} handleClickDelete={handleClickDelete}/>
         <TableContainer>
           <Table
             className={classes.table}
@@ -341,13 +374,12 @@ export default function User() {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      // onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -356,6 +388,7 @@ export default function User() {
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
+                          onClick={(event) => handleClick(event, row.id)}
                           checked={isItemSelected}
                           inputProps={{ "aria-labelledby": labelId }}
                         />
@@ -371,7 +404,17 @@ export default function User() {
                       <TableCell align="right">{row.username}</TableCell>
                       <TableCell align="right">{row.points}</TableCell>
                       <TableCell align="right">{row.country}</TableCell>
-                      <TableCell align="right">{moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}</TableCell>
+                      <TableCell align="right">
+                        {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Switch
+                          onChange={(e) => {
+                            handleChangeStatus(e, row);
+                          }}
+                          checked={row.status === "active"}
+                        />
+                      </TableCell>
                     </TableRow>
                   );
                 })}
