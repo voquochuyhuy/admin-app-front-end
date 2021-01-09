@@ -9,13 +9,64 @@
     align-items: center;
     color: black;
 }
+.admin-page .selected{
+    background: rgba(255, 127, 80,0.7);
+}
 .admin-page .navlink-item:hover{
     display: flex;
     text-decoration: none;
-    background-color: rgba(0, 0, 0, 0.04);
+    background: rgba(255, 127, 80,0.3);
 }
 .admin-page .post-management{
         
+}
+.admin-page .post-management .overview{
+    display: flex;
+    justify-content: space-between;
+    padding: 18px;
+}
+.admin-page .post-management .overview .overview-content{
+    display: flex;
+    justify-content: space-between;
+}
+.admin-page .post-management .overview .compare-text{
+    margin-top: 16px;
+    text-align: center;
+}
+.admin-page .post-management .overview .overview-content .overview-text{
+    text-align: center;
+    margin-left: 8px;
+}
+.admin-page .post-management .overview .overview-content .overview-text .value{
+    margin-top: 8px;
+    font-weight: 800;
+}
+.admin-page .post-management .overview .overview-content .overview-text h3{
+    margin:0;
+}
+.admin-page .post-management .overview .overview-content .icon{
+    color: coral;
+} 
+.admin-page .post-management .overview .overview-content .icon svg{
+    font-size: 62px;
+} 
+.admin-page .post-management .overview .total-active-user{
+    border: groove 1px red;
+    box-shadow: 1px 2px coral;
+    padding: 16px;
+    min-width: 200px;
+}
+.admin-page .post-management .overview .total-sessions{
+    border: groove 1px red;
+    box-shadow: 1px 2px coral;
+    padding: 16px;
+    min-width: 200px;
+}
+.admin-page .post-management .overview .average-session-duration{
+    border: groove 1px red;
+    box-shadow: 1px 2px coral;
+    padding: 16px;
+    min-width: 200px;
 }
 .admin-page .report-management{
         

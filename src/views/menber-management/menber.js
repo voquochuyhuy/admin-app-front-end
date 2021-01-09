@@ -20,6 +20,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import axios from "axios";
 import {ShowLoadingIcon,HideLoadingIcon} from "../../global/globalFunction";
+import SimpleDialogDemo from "../../components/buttonTriggerDialog";
 // function createData(name, calories, fat, carbs, protein) {
 //   return { name, calories, fat, carbs, protein };
 // }
@@ -73,8 +74,8 @@ const headCells = [
     disablePadding: true,
     label: "Email",
   },
-  { id: "calories", numeric: true, disablePadding: false, label: "Tên" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Quyền" },
+  { id: "calories", numeric: true, disablePadding: false, label: "Name" },
+  { id: "fat", numeric: true, disablePadding: false, label: "Role" },
 ];
 
 function EnhancedTableHead(props) {
@@ -190,9 +191,7 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+          <SimpleDialogDemo/>
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">

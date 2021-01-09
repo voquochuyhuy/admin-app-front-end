@@ -22,6 +22,7 @@ import moment from "moment";
 import axios from "axios";
 import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
 import { Button, Switch } from "@material-ui/core";
+import SimpleDialogDemo from "../../components/buttonTriggerDialog";
 // function createData(name, calories, fat, carbs, protein) {
 //   return { name, calories, fat, carbs, protein };
 // }
@@ -75,16 +76,16 @@ const headCells = [
     disablePadding: true,
     label: "Email",
   },
-  { id: "calories", numeric: true, disablePadding: false, label: "Tên" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Điểm" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Quốc gia" },
+  { id: "calories", numeric: true, disablePadding: false, label: "Username" },
+  { id: "fat", numeric: true, disablePadding: false, label: "Points" },
+  { id: "carbs", numeric: true, disablePadding: false, label: "Country" },
   {
     id: "protein",
     numeric: true,
     disablePadding: false,
-    label: "Ngày khởi tạo",
+    label: "Created At",
   },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Trạng thái" },
+  { id: "carbs", numeric: true, disablePadding: false, label: "Status" },
 ];
 
 function EnhancedTableHead(props) {
@@ -200,9 +201,7 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton onClick={props.handleClickDelete} aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+          <SimpleDialogDemo/>
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">

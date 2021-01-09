@@ -17,10 +17,14 @@ import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
+import GroupIcon from "@material-ui/icons/Group";
+import TimerIcon from "@material-ui/icons/Timer";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import moment from "moment";
-import axios from 'axios';
-import {ShowLoadingIcon,HideLoadingIcon} from "../../global/globalFunction";
+import axios from "axios";
+import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
+import SimpleDialogDemo from "../../components/buttonTriggerDialog";
 // function createData(name, calories, fat, carbs, protein) {
 //   return { name, calories, fat, carbs, protein };
 // }
@@ -72,7 +76,7 @@ const headCells = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Question Type"
+    label: "Question Type",
   },
   { id: "calories", numeric: true, disablePadding: false, label: "Content" },
   { id: "fat", numeric: true, disablePadding: false, label: "Votes" },
@@ -80,9 +84,9 @@ const headCells = [
     id: "carbs",
     numeric: true,
     disablePadding: false,
-    label: "Created At"
+    label: "Created At",
   },
-  { id: "protein", numeric: true, disablePadding: false, label: "Updated At" }
+  { id: "protein", numeric: true, disablePadding: false, label: "Updated At" },
 ];
 
 function EnhancedTableHead(props) {
@@ -198,9 +202,7 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+          <SimpleDialogDemo />
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
@@ -249,7 +251,7 @@ export default function Post() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rows,setRows] = React.useState([]);
+  const [rows, setRows] = React.useState([]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -295,100 +297,154 @@ export default function Post() {
     setPage(0);
   };
 
-
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    async function fetchData (){
+    async function fetchData() {
       ShowLoadingIcon();
-      await axios.get("https://test-deploy-express.herokuapp.com/question").then((res) => {
-      const data = res.data.data;
-      setRows(data);
-      HideLoadingIcon(); 
-    });
+      await axios
+        .get("https://test-deploy-express.herokuapp.com/question")
+        .then((res) => {
+          const data = res.data.data;
+          setRows(data);
+          HideLoadingIcon();
+        });
     }
     fetchData();
-    
+
     return () => {};
   }, []);
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.Id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+    <div className="post-management">
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <div className="overview">
+            <div className="total-active-user">
+              <div className="overview-content">
+                <div className="icon">
+                  <GroupIcon />
+                </div>
+                <div className="overview-text">
+                  <h3>Total active user</h3>
+                  <div className="value">10</div>
+                </div>
+              </div>
+              <div className="compare-text">
+                Compare to last week :{" "}
+                <span style={{ color: "green" }}>+47%</span>
+              </div>
+            </div>
+            <div className="total-sessions">
+              <div className="overview-content">
+                <div className="icon">
+                  <ExitToAppIcon />
+                </div>
+                <div className="overview-text">
+                  <h3>Total sessions</h3>
+                  <div className="value">100</div>
+                </div>
+              </div>
+              <div className="compare-text">
+                Compare to last week :{" "}
+                <span style={{ color: "green" }}>+50%</span>{" "}
+              </div>
+            </div>
+            <div className="average-session-duration">
+              <div className="overview-content">
+                <div className="icon">
+                  <TimerIcon />
+                </div>
+                <div className="overview-text">
+                  <h3>Session Duration</h3>
+                  <div className="value">400.5</div>
+                </div>
+              </div>
+              <div className="compare-text">
+                Compare to last week :{" "}
+                <span style={{ color: "green" }}>+10%</span>
+              </div>
+            </div>
+          </div>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.Id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.Id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.Id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.name}
+                        selected={isItemSelected}
                       >
-                        {row.questionType}
-                      </TableCell>
-                      <TableCell align="right">{row.content}</TableCell>
-                      <TableCell align="right">{+row.votes}</TableCell>
-                      <TableCell align="right">{moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}</TableCell>
-                      <TableCell align="right">{moment(row.updatedAt).format("DD-MM-YYYY hh:mm:ss")}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            inputProps={{ "aria-labelledby": labelId }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {row.questionType}
+                        </TableCell>
+                        <TableCell align="right">{row.content}</TableCell>
+                        <TableCell align="right">{+row.votes}</TableCell>
+                        <TableCell align="right">
+                          {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
+                        </TableCell>
+                        <TableCell align="right">
+                          {moment(row.updatedAt).format("DD-MM-YYYY hh:mm:ss")}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </div>
     </div>
   );
 }

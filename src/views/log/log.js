@@ -21,6 +21,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import moment from "moment";
 import axios from 'axios';
 import {ShowLoadingIcon,HideLoadingIcon} from "../../global/globalFunction";
+import SimpleDialogDemo from "../../components/buttonTriggerDialog";
 // function createData(name, calories, fat, carbs, protein) {
 //   return { name, calories, fat, carbs, protein };
 // }
@@ -72,10 +73,10 @@ const headCells = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Hành động"
+    label: "Action"
   },
-  { id: "calories", numeric: true, disablePadding: false, label: "Tác giả" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Thời gian" }
+  { id: "calories", numeric: true, disablePadding: false, label: "Username" },
+  { id: "protein", numeric: true, disablePadding: false, label: "Created At" }
 ];
 
 function EnhancedTableHead(props) {
@@ -191,9 +192,7 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+         <SimpleDialogDemo/>
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">

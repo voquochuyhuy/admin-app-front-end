@@ -96,7 +96,7 @@ const Admin = (props) => {
             <List>
               {routes.map(
                 (it, index) => (
-                  <NavLink to={it.path} className="navlink-item" key={index}>
+                  <NavLink to={it.path} activeClassName="selected" className="navlink-item" key={index}>
                     <ListItemIcon>
                       {it.icon}
                     </ListItemIcon>
