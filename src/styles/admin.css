@@ -71,6 +71,11 @@
 .admin-page .report-management{
         
 }
+.admin-page .report-management .link-main-app{
+    cursor: pointer;
+    color: blue;
+    text-decoration:underline;
+}
 .admin-page .user-management{
         
 }
@@ -79,4 +84,17 @@
 }
 .admin-page .log-management{
         
+}
+.admin-page .log-management .export-log-button{
+    background-color:green;
+    color: white;
+    min-width: 120px;
+}
+.admin-page .member-management{
+        
+}
+.admin-page .member-management .add-member-button{
+    background-color:green;
+    color: white;
+    min-width: 120px;
 }

@@ -14,32 +14,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import axios from "axios";
-import {ShowLoadingIcon,HideLoadingIcon} from "../../global/globalFunction";
+import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
 import SimpleDialogDemo from "../../components/buttonTriggerDialog";
-// function createData(name, calories, fat, carbs, protein) {
-//   return { name, calories, fat, carbs, protein };
-// }
-
-// const rows = [
-//   createData("Cupcake", 305, 3.7, 67, 4.3),
-//   createData("Donut", 452, 25.0, 51, 4.9),
-//   createData("Eclair", 262, 16.0, 24, 6.0),
-//   createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-//   createData("Gingerbread", 356, 16.0, 49, 3.9),
-//   createData("Honeycomb", 408, 3.2, 87, 6.5),
-//   createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-//   createData("Jelly Bean", 375, 0.0, 94, 0.0),
-//   createData("KitKat", 518, 26.0, 65, 7.0),
-//   createData("Lollipop", 392, 0.2, 98, 0.0),
-//   createData("Marshmallow", 318, 0, 81, 2.0),
-//   createData("Nougat", 360, 19.0, 9, 37.0),
-//   createData("Oreo", 437, 18.0, 63, 4.0),
-// ];
+import { Button } from "@material-ui/core";
+import DialogAddMember from "../../components/dialogAddMember";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -191,14 +171,10 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <SimpleDialogDemo/>
+          <SimpleDialogDemo />
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+        <></>
       )}
     </Toolbar>
   );
@@ -239,9 +215,9 @@ export default function Menber() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rows,setRows] = React.useState([]);
-
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = React.useState([]);
+  const [isOpenAddMemberDialog, setIsOpenAddMemberDialog] = React.useState(false);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -285,99 +261,120 @@ export default function Menber() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const onClickAddMember = async () => {
+    setIsOpenAddMemberDialog(true);
+  };
+  const handleSaveMember = () =>{
 
-
+  }
+  const onCloseDialogAddMember = () =>{
+    setIsOpenAddMemberDialog(false);
+  }
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   useEffect(() => {
-    async function fetchData (){
+    async function fetchData() {
       ShowLoadingIcon();
-      await axios.get("https://test-deploy-express.herokuapp.com/admin/admin-list").then((res) => {
-      const data = res.data.data;
-      setRows(data);
-      HideLoadingIcon(); 
-    });
+      await axios
+        .get("https://test-deploy-express.herokuapp.com/admin/admin-list")
+        .then((res) => {
+          const data = res.data.data;
+          setRows(data);
+          HideLoadingIcon();
+        });
     }
     fetchData();
-    
+
     return () => {};
   }, []);
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+    <div className="member-management">
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <div style={{ display: "flex", justifyContent: "flex-end",padding:"7px" }}>
+            <Button className="add-member-button" onClick={onClickAddMember}>
+              Add
+            </Button>
+          </div>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.name}
+                        selected={isItemSelected}
                       >
-                        {row.email}
-                      </TableCell>
-                      <TableCell align="right">{row.username}</TableCell>
-                      <TableCell align="right">{row.role}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            inputProps={{ "aria-labelledby": labelId }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {row.email}
+                        </TableCell>
+                        <TableCell align="right">{row.username}</TableCell>
+                        <TableCell align="right">{row.role}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
+        <DialogAddMember
+          open={isOpenAddMemberDialog}
+          handleDelete={handleSaveMember}
+          onClose={onCloseDialogAddMember}
         />
-      </Paper>
+      </div>
     </div>
   );
 }

@@ -81,4 +81,25 @@
 .MuiDialogActions-root div .MuiButtonBase-root{
   min-width: 90px;
 } 
+#add-member-dialog{
+
+}
+#add-member-dialog .MuiPaper-root{
+  width: 500px;
+}
+#add-member-dialog .MuiPaper-root form{
+  width: 100%;
+}
+#add-member-dialog .MuiPaper-root form .MuiFormControl-root{
+  width: 100%;
+}
+#report-detail-dialog .MuiPaper-root{
+  width: 500px;
+}
+#report-detail-dialog .MuiPaper-root form{
+  width: 100%;
+}
+#report-detail-dialog .MuiPaper-root form .MuiFormControl-root{
+  width: 100%;
+}
 

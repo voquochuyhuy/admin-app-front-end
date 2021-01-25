@@ -25,7 +25,7 @@ export default function SimpleDialog(props) {
         <WarningIcon />
       </DialogContent>
       <DialogActions>
-        <div style={{ display: "flex", justifyContent: "space-between",width:"100%" }}>
+        <div style={{ display: "flex", justifyContent: "space-between",width:"100%",padding: '8px' }}>
           <Button onClick={handleClose} variant="outlined">
             Cancel
           </Button>

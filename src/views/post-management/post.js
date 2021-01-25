@@ -202,14 +202,10 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <SimpleDialogDemo />
+          <SimpleDialogDemo handleDetele={props.handleDetele} />
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+        <></>
       )}
     </Toolbar>
   );
@@ -250,7 +246,7 @@ export default function Post() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
 
   const handleRequestSort = (event, property) => {
@@ -261,7 +257,7 @@ export default function Post() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.Id);
       setSelected(newSelecteds);
       return;
     }
@@ -296,22 +292,31 @@ export default function Post() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  const handleDetelePost = async () => {
+    ShowLoadingIcon();
+    await axios
+      .delete("https://test-deploy-express.herokuapp.com/question", {
+        id: selected,
+      })
+      .then((res) => {
+        fetchData();
+      });
+  };
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const fetchData = async () => {
+    ShowLoadingIcon();
+    await axios
+      .get("https://test-deploy-express.herokuapp.com/question")
+      .then((res) => {
+        const data = res.data.data;
+        setRows(data);
+        HideLoadingIcon();
+      });
+  };
   useEffect(() => {
-    async function fetchData() {
-      ShowLoadingIcon();
-      await axios
-        .get("https://test-deploy-express.herokuapp.com/question")
-        .then((res) => {
-          const data = res.data.data;
-          setRows(data);
-          HideLoadingIcon();
-        });
-    }
     fetchData();
 
     return () => {};
@@ -367,7 +372,10 @@ export default function Post() {
               </div>
             </div>
           </div>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            handleDetele={handleDetelePost}
+          />
           <TableContainer>
             <Table
               className={classes.table}

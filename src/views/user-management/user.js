@@ -201,14 +201,10 @@ const EnhancedTableToolbar = (props) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <SimpleDialogDemo/>
+          <SimpleDialogDemo />
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+        <></>
       )}
     </Toolbar>
   );
@@ -249,7 +245,7 @@ export default function User() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -323,7 +319,7 @@ export default function User() {
     ShowLoadingIcon();
     await axios
       .delete("https://test-deploy-express.herokuapp.com/user/multi-delete", {
-        ids : selected.toString()
+        ids: selected.toString(),
       })
       .then((res) => {
         fetchData();
@@ -352,7 +348,10 @@ export default function User() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} handleClickDelete={handleClickDelete}/>
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          handleClickDelete={handleClickDelete}
+        />
         <TableContainer>
           <Table
             className={classes.table}

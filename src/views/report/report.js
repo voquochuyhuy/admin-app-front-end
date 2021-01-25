@@ -11,16 +11,22 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
+import DetailsIcon from "@material-ui/icons/Details";
 import moment from "moment";
 import axios from "axios";
 import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Tooltip,
+} from "@material-ui/core";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import DialogReportDetail from "../../components/dialogReportDetail";
+// import {db} from '../../firebase.js';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -49,21 +55,32 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: "content", numeric: false, disablePadding: false, label: "Content" },
+  // { id: "content", numeric: false, disablePadding: false, label: "Content" },
   {
-    id: "name",
+    id: "Report message",
     numeric: false,
     disablePadding: true,
     label: "Report message",
   },
-  { id: "calories", numeric: false, disablePadding: false, label: "Reporter" },
-  { id: "fat", numeric: false, disablePadding: false, label: "Created at" },
-  // {
-  //   id: "protein",
-  //   numeric: true,
-  //   disablePadding: false,
-  //   label: "Ngày khởi tạo",
-  // },
+  { id: "Reporter", numeric: false, disablePadding: false, label: "Reporter" },
+  {
+    id: "Created at",
+    numeric: false,
+    disablePadding: false,
+    label: "Created at",
+  },
+  {
+    id: "Link",
+    numeric: true,
+    disablePadding: false,
+    label: "Link",
+  },
+  {
+    id: "Action",
+    numeric: true,
+    disablePadding: false,
+    label: "Action",
+  },
 ];
 
 function EnhancedTableHead(props) {
@@ -83,14 +100,6 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          />
-        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -156,41 +165,7 @@ const EnhancedTableToolbar = (props) => {
       className={clsx(classes.root, {
         [classes.highlight]: numSelected > 0,
       })}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          0 selected
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
+    ></Toolbar>
   );
 };
 
@@ -221,7 +196,15 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
 }));
-
+const useStylesDropDown = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 export default function Report() {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
@@ -229,8 +212,13 @@ export default function Report() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
+  const [type, setType] = React.useState("Question");
+  const [
+    isOpenDialogReportDetail,
+    setIsOpenDialogReportDetail,
+  ] = React.useState(false);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -279,101 +267,170 @@ export default function Report() {
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const fetchDataQuestion = async () => {
+    ShowLoadingIcon();
+    await axios
+      .get("https://test-deploy-express.herokuapp.com/report/question-report")
+      .then((res) => {
+        const data = res.data.data;
+        setRows(data);
+      });
+    HideLoadingIcon();
+  };
+  const fetchDataUser = async () => {
+    ShowLoadingIcon();
+    await axios
+      .get("https://test-deploy-express.herokuapp.com/report/user-report")
+      .then((res) => {
+        const data = res.data.data;
+        console.log(data);
+        setRows(data);
+      });
+    HideLoadingIcon();
+  };
+  const fetchDataAnswer = async () => {
+    ShowLoadingIcon();
+    await axios
+      .get("https://test-deploy-express.herokuapp.com/report/answer-report")
+      .then((res) => {
+        const data = res.data.data;
+        setRows(data);
+      });
+    HideLoadingIcon();
+  };
   useEffect(() => {
-    async function fetchData() {
-      ShowLoadingIcon();
-      await axios
-        .get("https://test-deploy-express.herokuapp.com/report")
-        .then((res) => {
-          const data = res.data.data;
-          setRows(data);
-        });
-      HideLoadingIcon();
-    }
-    fetchData();
-
+    fetchDataQuestion();
     return () => {};
   }, []);
+  const classesDropDown = useStylesDropDown();
+
+  const handleChange = (event) => {
+    setType(event.target.value);
+    if (event.target.value === "Question") {
+      fetchDataQuestion();
+    } else if (event.target.value === "User") {
+      fetchDataUser();
+    } else {
+      fetchDataAnswer();
+    }
+  };
+  const handleDeleteReportDetail = () => {};
+  const onCloseDialogReportDetail = () => {
+    setIsOpenDialogReportDetail(false);
+  };
+  const onOpenDialogReportDetail = () => {
+    setIsOpenDialogReportDetail(true);
+  };
+  const handleClickReportLink = (e,row) =>{
+    window.open(`https://togebetter.netlify.app/`)
+  }
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+    <div className="report-management">
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <div>
+            <FormControl className={classesDropDown.formControl}>
+              <InputLabel id="demo-simple-select-label">Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={type}
+                onChange={handleChange}
+              >
+                <MenuItem value={"Question"}>Question</MenuItem>
+                <MenuItem value={"Answer"}>Answer</MenuItem>
+                <MenuItem value={"User"}>User</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </TableCell>
-                      <TableCell align="left">{row.content}</TableCell>
-
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        align="left"
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.name}
                       >
-                        {row.message}
-                      </TableCell>
+                        {/* <TableCell align="left">{row.content}</TableCell> */}
 
-                      <TableCell align="left">{row.username}</TableCell>
-                      <TableCell align="left">
-                        {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                          align="left"
+                        >
+                          {row.message}
+                        </TableCell>
+
+                        <TableCell align="left">{row.username}</TableCell>
+                        <TableCell align="left">
+                          {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
+                        </TableCell>
+                        <TableCell align="left">
+                          <span onClick={(e)=>{handleClickReportLink(e,row)}} className="link-main-app">https://togebetter.netlify.app/</span>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Tooltip title="Detail" placement="top">
+                            <IconButton
+                              aria-label="delete"
+                              onClick={onOpenDialogReportDetail}
+                            >
+                              <DetailsIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
+        <DialogReportDetail
+          open={isOpenDialogReportDetail}
+          handleDelete={handleDeleteReportDetail}
+          onClose={onCloseDialogReportDetail}
+          type={type}
         />
-      </Paper>
+      </div>
     </div>
   );
 }

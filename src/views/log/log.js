@@ -19,9 +19,10 @@ import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import moment from "moment";
-import axios from 'axios';
-import {ShowLoadingIcon,HideLoadingIcon} from "../../global/globalFunction";
+import axios from "axios";
+import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
 import SimpleDialogDemo from "../../components/buttonTriggerDialog";
+import { Button } from "@material-ui/core";
 // function createData(name, calories, fat, carbs, protein) {
 //   return { name, calories, fat, carbs, protein };
 // }
@@ -73,10 +74,10 @@ const headCells = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Action"
+    label: "Action",
   },
   { id: "calories", numeric: true, disablePadding: false, label: "Username" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Created At" }
+  { id: "protein", numeric: true, disablePadding: false, label: "Created At" },
 ];
 
 function EnhancedTableHead(props) {
@@ -170,37 +171,21 @@ const EnhancedTableToolbar = (props) => {
         [classes.highlight]: numSelected > 0,
       })}
     >
-      {numSelected > 0 ? (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: "7px",
+          width: "100%",
+        }}
+      >
+        <Button
+          className="export-log-button"
+          onClick={props.handleClickExportLog}
         >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          0 selected
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-         <SimpleDialogDemo/>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+          Export
+        </Button>
+      </div>
     </Toolbar>
   );
 };
@@ -240,8 +225,8 @@ export default function Log() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rows,setRows] = React.useState([]);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = React.useState([]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -286,97 +271,120 @@ export default function Log() {
     setPage(0);
   };
 
-
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-  useEffect( () => {
-    async function fetchData (){
+  const handleClickExportLog = () => {
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(
+        new Blob([rows]),
+        "log-report" + ".csv"
+      );
+    } else {
+      const url = window.URL.createObjectURL(new Blob([rows]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "log-report" + ".csv");
+      document.body.appendChild(link);
+      link.click();
+    }
+  };
+  useEffect(() => {
+    async function fetchData() {
       ShowLoadingIcon();
-      await axios.get("https://test-deploy-express.herokuapp.com/log").then((res) => {
-        const data = res.data.data;
-        setRows(data);
-      });
-      HideLoadingIcon(); 
+      await axios
+        .get("https://test-deploy-express.herokuapp.com/log")
+        .then((res) => {
+          const data = res.data.data;
+          setRows(data);
+        });
+      HideLoadingIcon();
     }
     fetchData();
     return () => {};
   }, []);
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+    <div className="log-management">
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            handleClickExportLog={handleClickExportLog}
+          />
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.name);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        {/* <Checkbox
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.name)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.name}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          {/* <Checkbox
                           checked={isItemSelected}
                           inputProps={{ "aria-labelledby": labelId }}
                         /> */}
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.action}
-                      </TableCell>
-                      <TableCell align="right">{row.username}</TableCell>
-                      <TableCell align="right">{moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {row.action}
+                        </TableCell>
+                        <TableCell align="right">{row.username}</TableCell>
+                        <TableCell align="right">
+                          {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </div>
     </div>
   );
 }
