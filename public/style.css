@@ -84,6 +84,10 @@
 #add-member-dialog{
 
 }
+#add-member-dialog .MuiDialogContent-root{
+  padding-top: 0;
+  padding-bottom: 0;
+}
 #add-member-dialog .MuiPaper-root{
   width: 500px;
 }
@@ -93,6 +97,15 @@
 #add-member-dialog .MuiPaper-root form .MuiFormControl-root{
   width: 100%;
 }
+#add-member-dialog .MuiPaper-root form .content .username{
+  margin-bottom: 16px;
+}
+#add-member-dialog .MuiPaper-root form .content .password{
+  margin-bottom: 16px;
+}
+#add-member-dialog .MuiPaper-root form .content .email{
+  margin-bottom: 16px;
+}
 #report-detail-dialog .MuiPaper-root{
   width: 500px;
 }
@@ -101,5 +114,6 @@
 }
 #report-detail-dialog .MuiPaper-root form .MuiFormControl-root{
   width: 100%;
+  margin-bottom: 16px;
 }
 

@@ -248,7 +248,11 @@ export default function Post() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
-
+  const [overviewData, setOverviewData]= React.useState({
+    totalActiveUser : 0,
+    totalSession : 0,
+    averageSession:0
+  });
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -310,9 +314,26 @@ export default function Post() {
     ShowLoadingIcon();
     await axios
       .get("https://test-deploy-express.herokuapp.com/question")
-      .then((res) => {
+      .then(async (res) => {
         const data = res.data.data;
         setRows(data);
+        await axios
+          .get("https://test-deploy-express.herokuapp.com/report/dashboard")
+          .then((res) => {
+           const totalActiveUser = res.data.data.totalActiveUser[0]['COUNT(*)'];
+           const numberOfLog = res.data.data.numberOfLog[0]['COUNT(*)'];
+          //  const oldestLog = res.data.data.oldest[0];
+           
+           setOverviewData({
+            totalActiveUser,
+            totalSession : numberOfLog,
+            averageSession: 400.5
+           })
+          })
+          .catch((err) => {
+            console.log(err);
+            HideLoadingIcon();
+          });
         HideLoadingIcon();
       });
   };
@@ -333,7 +354,7 @@ export default function Post() {
                 </div>
                 <div className="overview-text">
                   <h3>Total active user</h3>
-                  <div className="value">10</div>
+                  <div className="value">{overviewData.totalActiveUser}</div>
                 </div>
               </div>
               <div className="compare-text">
@@ -348,7 +369,7 @@ export default function Post() {
                 </div>
                 <div className="overview-text">
                   <h3>Total sessions</h3>
-                  <div className="value">100</div>
+                  <div className="value">{overviewData.totalSession}</div>
                 </div>
               </div>
               <div className="compare-text">
@@ -363,7 +384,7 @@ export default function Post() {
                 </div>
                 <div className="overview-text">
                   <h3>Session Duration</h3>
-                  <div className="value">400.5</div>
+                  <div className="value">{overviewData.averageSession}</div>
                 </div>
               </div>
               <div className="compare-text">

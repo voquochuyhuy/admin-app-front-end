@@ -59,7 +59,7 @@ const headCells = [
   {
     id: "Report message",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Report message",
   },
   { id: "Reporter", numeric: false, disablePadding: false, label: "Reporter" },
@@ -209,7 +209,6 @@ export default function Report() {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
-  const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -219,52 +218,20 @@ export default function Report() {
     isOpenDialogReportDetail,
     setIsOpenDialogReportDetail,
   ] = React.useState(false);
+  const [selectedItem, setSelectedItem] = React.useState({});
+ 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const isSelected = (name) => selected.indexOf(name) !== -1;
-
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   const fetchDataQuestion = async () => {
@@ -303,7 +270,6 @@ export default function Report() {
     return () => {};
   }, []);
   const classesDropDown = useStylesDropDown();
-
   const handleChange = (event) => {
     setType(event.target.value);
     if (event.target.value === "Question") {
@@ -318,7 +284,8 @@ export default function Report() {
   const onCloseDialogReportDetail = () => {
     setIsOpenDialogReportDetail(false);
   };
-  const onOpenDialogReportDetail = () => {
+  const onOpenDialogReportDetail = (e,row) => {
+    setSelectedItem(row);
     setIsOpenDialogReportDetail(true);
   };
   const handleClickReportLink = (e,row) =>{
@@ -328,7 +295,7 @@ export default function Report() {
     <div className="report-management">
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <div>
+          <div style={{marginLeft:"8px"}}>
             <FormControl className={classesDropDown.formControl}>
               <InputLabel id="demo-simple-select-label">Type</InputLabel>
               <Select
@@ -352,10 +319,8 @@ export default function Report() {
             >
               <EnhancedTableHead
                 classes={classes}
-                numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
                 rowCount={rows.length}
               />
@@ -363,13 +328,11 @@ export default function Report() {
                 {stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                       <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.id)}
                         role="checkbox"
                         tabIndex={-1}
                         key={row.name}
@@ -380,7 +343,7 @@ export default function Report() {
                           component="th"
                           id={labelId}
                           scope="row"
-                          padding="none"
+                          // padding="none"
                           align="left"
                         >
                           {row.message}
@@ -397,7 +360,7 @@ export default function Report() {
                           <Tooltip title="Detail" placement="top">
                             <IconButton
                               aria-label="delete"
-                              onClick={onOpenDialogReportDetail}
+                              onClick={(e)=>onOpenDialogReportDetail(e,row)}
                             >
                               <DetailsIcon />
                             </IconButton>
@@ -429,6 +392,7 @@ export default function Report() {
           handleDelete={handleDeleteReportDetail}
           onClose={onCloseDialogReportDetail}
           type={type}
+          selectedItem={selectedItem}
         />
       </div>
     </div>

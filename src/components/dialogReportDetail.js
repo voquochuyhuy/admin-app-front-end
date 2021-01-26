@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -6,29 +6,21 @@ import {
   DialogContent,
   TextField,
 } from "@material-ui/core";
-import WarningIcon from "@material-ui/icons/Warning";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 
 export default function DialogReportDetail(props) {
-  const { onClose, open } = props;
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const { onClose, open,selectedItem } = props;
+  console.log(selectedItem,"selectedItem")
   const handleClose = () => {
     onClose();
   };
-  const handleChangeTextField = (e, type) => {
-    switch (type) {
-      case "email":
-        setUsername(e.target.value);
-        break;
-      case "password":
-        setPassword(e.target.value);
-        break;
-      default:
-        break;
+  useEffect(() => {
+    
+    return () => {
+      
     }
-  };
+  }, [])
   return (
     <Dialog
       onClose={handleClose}
@@ -42,31 +34,55 @@ export default function DialogReportDetail(props) {
       <DialogContent>
         <form noValidate autoComplete="off">
           <div className="content">
-            {props.type === "question" ? (
-              <div className="content">
-                <TextField
-                  label="Content"
-                  defaultValue="Sample Data"
-                  value={username}
-                />
-              </div>
+            {props.type === "Question" || props.type === "Answer" ? (
+              <>
+                <div className="content">
+                  <TextField
+                    label="Content"
+                    defaultValue="Sample Data"
+                    value={props.content}
+                  />
+                </div>
+                <div class="belong-to">
+                  <TextField
+                    label="Belong to User"
+                    defaultValue="Sample Data"
+                    value={props.belongTo}
+                  />
+                </div>
+              </>
             ) : (
-              <></>
+              <>
+                <div className="username">
+                  <TextField
+                    label="Username"
+                    defaultValue="Sample Data"
+                    value={props.username}
+                  />
+                </div>
+                <div class="email">
+                  <TextField
+                    label="Email"
+                    defaultValue="Sample Data"
+                    value={props.email}
+                  />
+                </div>
+                <div class="country">
+                  <TextField
+                    label="Country"
+                    defaultValue="Sample Data"
+                    value={props.country}
+                  />
+                </div>
+                <div class="created-at">
+                  <TextField
+                    label="Created At"
+                    defaultValue="Sample Data"
+                    value={props.createdAt}
+                  />
+                </div>
+              </>
             )}
-            <div className="email">
-              <TextField
-                label="Username"
-                defaultValue="Sample Data"
-                value={username}
-              />
-            </div>
-            <div class="password">
-              <TextField
-                label="Created At"
-                defaultValue="Sample Data"
-                value={password}
-              />
-            </div>
           </div>
         </form>
       </DialogContent>
@@ -82,13 +98,23 @@ export default function DialogReportDetail(props) {
           <Button onClick={handleClose} variant="outlined">
             Cancel
           </Button>
-          <Button
-            onClick={props.handleDelete}
-            color="secondary"
-            variant="contained"
-          >
-            OK
-          </Button>
+          <div style={{width:"200px",display:"flex",justifyContent:"space-between"}}>
+            {props.type === "User" ?<Button
+              onClick={props.handleDelete}
+              color="secondary"
+              variant="outlined"
+            >
+              BAN
+            </Button> :<div style={{width:"90px",height:"1px"}}></div>}
+            
+            <Button
+              onClick={props.handleDelete}
+              color="secondary"
+              variant="contained"
+            >
+              DELETE
+            </Button>
+          </div>
         </div>
       </DialogActions>
     </Dialog>
