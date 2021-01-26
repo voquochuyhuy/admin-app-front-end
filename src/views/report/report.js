@@ -219,7 +219,7 @@ export default function Report() {
     setIsOpenDialogReportDetail,
   ] = React.useState(false);
   const [selectedItem, setSelectedItem] = React.useState({});
- 
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -284,18 +284,21 @@ export default function Report() {
   const onCloseDialogReportDetail = () => {
     setIsOpenDialogReportDetail(false);
   };
-  const onOpenDialogReportDetail = (e,row) => {
+  const onOpenDialogReportDetail = (e, row) => {
     setSelectedItem(row);
     setIsOpenDialogReportDetail(true);
   };
-  const handleClickReportLink = (e,row) =>{
-    window.open(`https://togebetter.netlify.app/`)
-  }
+  const handleClickReportLink = (e, row) => {
+    if(type !== "User")
+      window.open(`https://togebetter.netlify.app/users/${row.targetID}`);
+    else window.open(`https://togebetter.netlify.app/questions/${row.targetID}`);
+  };
+  
   return (
     <div className="report-management">
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <div style={{marginLeft:"8px"}}>
+          <div style={{ marginLeft: "8px" }}>
             <FormControl className={classesDropDown.formControl}>
               <InputLabel id="demo-simple-select-label">Type</InputLabel>
               <Select
@@ -354,13 +357,22 @@ export default function Report() {
                           {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
                         </TableCell>
                         <TableCell align="left">
-                          <span onClick={(e)=>{handleClickReportLink(e,row)}} className="link-main-app">https://togebetter.netlify.app/</span>
+                          <span
+                            onClick={(e) => {
+                              handleClickReportLink(e, row);
+                            }}
+                            className="link-main-app"
+                          >
+                            {type === "Answer" || type === "Question"
+                              ? `https://togebetter.netlify.app/questions/${row.targetID}`
+                              : `https://togebetter.netlify.app/users/${row.targetID}`}
+                          </span>
                         </TableCell>
                         <TableCell align="left">
                           <Tooltip title="Detail" placement="top">
                             <IconButton
                               aria-label="delete"
-                              onClick={(e)=>onOpenDialogReportDetail(e,row)}
+                              onClick={(e) => onOpenDialogReportDetail(e, row)}
                             >
                               <DetailsIcon />
                             </IconButton>
