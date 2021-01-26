@@ -41,6 +41,9 @@ export default function DialogReportDetail(props) {
                     label="Content"
                     defaultValue="Sample Data"
                     value={props.content}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 </div>
                 <div class="belong-to">
@@ -48,6 +51,9 @@ export default function DialogReportDetail(props) {
                     label="Belong to User"
                     defaultValue="Sample Data"
                     value={props.belongTo}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 </div>
               </>
@@ -58,6 +64,9 @@ export default function DialogReportDetail(props) {
                     label="Username"
                     defaultValue="Sample Data"
                     value={props.username}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 </div>
                 <div class="email">
@@ -65,6 +74,9 @@ export default function DialogReportDetail(props) {
                     label="Email"
                     defaultValue="Sample Data"
                     value={props.email}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 </div>
                 <div class="country">
@@ -72,6 +84,9 @@ export default function DialogReportDetail(props) {
                     label="Country"
                     defaultValue="Sample Data"
                     value={props.country}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 </div>
                 <div class="created-at">
@@ -79,6 +94,9 @@ export default function DialogReportDetail(props) {
                     label="Created At"
                     defaultValue="Sample Data"
                     value={props.createdAt}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 </div>
               </>

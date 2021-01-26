@@ -77,7 +77,6 @@ const headCells = [
     label: "Email",
   },
   { id: "calories", numeric: true, disablePadding: false, label: "Username" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Points" },
   { id: "carbs", numeric: true, disablePadding: false, label: "Country" },
   {
     id: "protein",
@@ -400,7 +399,6 @@ export default function User() {
                         {row.email}
                       </TableCell>
                       <TableCell align="right">{row.username}</TableCell>
-                      <TableCell align="right">{row.points}</TableCell>
                       <TableCell align="right">{row.country}</TableCell>
                       <TableCell align="right">
                         {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
