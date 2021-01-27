@@ -290,8 +290,8 @@ export default function Report() {
   };
   const handleClickReportLink = (e, row) => {
     if(type !== "User")
-      window.open(`https://togebetter.netlify.app/users/${row.targetID}`);
-    else window.open(`https://togebetter.netlify.app/questions/${row.targetID}`);
+      window.open(`https://togebetter.netlify.app/questions/${row.targetID}`);
+    else window.open(`https://togebetter.netlify.app/users/${row.targetID}`);
   };
   
   return (
