@@ -26,7 +26,7 @@ const Auth = (props) => {
         let token = res.data.accessToken;
         axios.defaults.headers.common["Authorization"] = res.data.accessToken;
         localStorage.setItem("access_token", token);
-        props.history.push("/post-management");
+        props.history.push("/dashboard");
       })
       .catch((error) => {
         if (error.message === "Network Error") {

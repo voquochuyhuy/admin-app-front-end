@@ -20,53 +20,58 @@
 .admin-page .post-management{
         
 }
-.admin-page .post-management .overview{
+.admin-page .help .overview{
     display: flex;
     justify-content: space-between;
     padding: 18px;
 }
-.admin-page .post-management .overview .overview-content{
+.admin-page .help .overview .overview-content{
     display: flex;
     justify-content: space-between;
 }
-.admin-page .post-management .overview .compare-text{
+.admin-page .help .overview .compare-text{
     margin-top: 16px;
     text-align: center;
 }
-.admin-page .post-management .overview .overview-content .overview-text{
+.admin-page .help .overview .overview-content .overview-text{
     text-align: center;
     margin-left: 8px;
 }
-.admin-page .post-management .overview .overview-content .overview-text .value{
+.admin-page .help .overview .overview-content .overview-text .value{
     margin-top: 8px;
     font-weight: 800;
 }
-.admin-page .post-management .overview .overview-content .overview-text h3{
+.admin-page .help .overview .overview-content .overview-text h3{
     margin:0;
 }
-.admin-page .post-management .overview .overview-content .icon{
+.admin-page .help .overview .overview-content .icon{
     color: coral;
 } 
-.admin-page .post-management .overview .overview-content .icon svg{
+.admin-page .help .overview .overview-content .icon svg{
     font-size: 62px;
 } 
-.admin-page .post-management .overview .total-active-user{
+.admin-page .help .overview .total-active-user{
     border: groove 1px red;
     box-shadow: 1px 2px coral;
     padding: 16px;
     min-width: 200px;
 }
-.admin-page .post-management .overview .total-sessions{
+.admin-page .help .overview .total-sessions{
     border: groove 1px red;
     box-shadow: 1px 2px coral;
     padding: 16px;
     min-width: 200px;
 }
-.admin-page .post-management .overview .average-session-duration{
+.admin-page .help .overview .average-session-duration{
     border: groove 1px red;
     box-shadow: 1px 2px coral;
     padding: 16px;
     min-width: 200px;
+}
+.admin-page .help .link-main-app{
+    cursor: pointer;
+    color: blue;
+    text-decoration:underline;
 }
 .admin-page .report-management{
         

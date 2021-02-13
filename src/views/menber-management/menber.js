@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import clsx from "clsx";
-import { lighten, makeStyles } from "@material-ui/core/styles";
+import {  makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -10,11 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import Tooltip from "@material-ui/core/Tooltip";
 import axios from "axios";
 import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
 import SimpleDialogDemo from "../../components/buttonTriggerDialog";
@@ -51,7 +46,7 @@ const headCells = [
   {
     id: "name",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Email",
   },
   { id: "calories", numeric: true, disablePadding: false, label: "Name" },
@@ -75,14 +70,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          />
-        </TableCell>
+        
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -104,6 +92,9 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell padding="checkbox">
+          Action
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -117,71 +108,6 @@ EnhancedTableHead.propTypes = {
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
-};
-
-const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  highlight:
-    theme.palette.type === "light"
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  title: {
-    flex: "1 1 100%",
-  },
-}));
-
-const EnhancedTableToolbar = (props) => {
-  const classes = useToolbarStyles();
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          0 selected
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <SimpleDialogDemo />
-        </Tooltip>
-      ) : (
-        <></>
-      )}
-    </Toolbar>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -266,10 +192,15 @@ export default function Menber() {
   };
   const handleSaveMember = () =>{
 
-  }
+  };
+  const callBackDeleteSuccess = (item)=>{
+    const pRows = rows.filter(it=>it.id !== item.id);
+    setRows(pRows);
+  };
   const onCloseDialogAddMember = () =>{
     setIsOpenAddMemberDialog(false);
   }
+ 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
@@ -298,7 +229,7 @@ export default function Menber() {
               Add
             </Button>
           </div>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          
           <TableContainer>
             <Table
               className={classes.table}
@@ -332,22 +263,18 @@ export default function Menber() {
                         key={row.name}
                         selected={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                          />
-                        </TableCell>
                         <TableCell
                           component="th"
                           id={labelId}
                           scope="row"
-                          padding="none"
                         >
                           {row.email}
                         </TableCell>
                         <TableCell align="right">{row.username}</TableCell>
                         <TableCell align="right">{row.role}</TableCell>
+                        <TableCell padding="checkbox">
+                          <SimpleDialogDemo type='member' item={row} callBackDeleteSuccess={callBackDeleteSuccess}/>
+                        </TableCell>
                       </TableRow>
                     );
                   })}

@@ -6,11 +6,13 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 
 export default function SimpleDialog(props) {
-  const { onClose, selectedValue, open, handleDelete } = props;
+  const { onClose, selectedValue, open, onDelete } = props;
   const handleClose = () => {
     onClose(selectedValue);
   };
-
+  const handleDelete = ()=>{
+    onDelete();
+  }
   return (
     <Dialog
       onClose={handleClose}
@@ -18,7 +20,7 @@ export default function SimpleDialog(props) {
       open={open}
     >
       <DialogTitle id="simple-dialog-title">
-        Delete selected item(s)
+        Delete selected item
       </DialogTitle>
       <DialogContent>
         <WarningIcon />

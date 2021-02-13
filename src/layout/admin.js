@@ -69,7 +69,7 @@ const Admin = (props) => {
   useEffect(() => {
     if (localStorage.getItem("access_token") === null) {
       props.history.push("/auth");
-    } else props.history.push("/post-management");
+    } else props.history.push("/dashboard");
     return () => {};
   }, []);
 

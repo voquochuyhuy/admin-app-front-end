@@ -12,21 +12,12 @@ import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Paper from "@material-ui/core/Paper";
-import IconButton from "@material-ui/core/IconButton";
-import DetailsIcon from "@material-ui/icons/Details";
+import GroupIcon from "@material-ui/icons/Group";
+import TimerIcon from "@material-ui/icons/Timer";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import moment from "moment";
 import axios from "axios";
 import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Tooltip,
-} from "@material-ui/core";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import DialogReportDetail from "../../components/dialogReportDetail";
-// import {db} from '../../firebase.js';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -57,15 +48,21 @@ function stableSort(array, comparator) {
 const headCells = [
   // { id: "content", numeric: false, disablePadding: false, label: "Content" },
   {
-    id: "Report message",
+    id: "Question type",
     numeric: false,
     disablePadding: false,
-    label: "Report message",
+    label: "Question type",
   },
-  { id: "Reporter", numeric: false, disablePadding: false, label: "Reporter" },
+  { id: "Content", numeric: false, disablePadding: false, label: "Content" },
+  {
+    id: "Language",
+    numeric: false,
+    disablePadding: false,
+    label: "Language",
+  },
   {
     id: "Created at",
-    numeric: false,
+    numeric: true,
     disablePadding: false,
     label: "Created at",
   },
@@ -74,12 +71,6 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Link",
-  },
-  {
-    id: "Action",
-    numeric: true,
-    disablePadding: false,
-    label: "Action",
   },
 ];
 
@@ -205,7 +196,7 @@ const useStylesDropDown = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
 }));
-export default function Report() {
+export default function Help() {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -214,11 +205,18 @@ export default function Report() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
   const [type, setType] = React.useState("Question");
+  const [overviewData, setOverviewData] = React.useState({
+    totalActiveUser: 0,
+    totalSession: 0,
+    averageSession: 0,
+    userLastWeek: 0,
+    logLastWeek: 0,
+    sessionLastWeek: 0,
+  });
   const [
     isOpenDialogReportDetail,
     setIsOpenDialogReportDetail,
   ] = React.useState(false);
-  const [selectedItem, setSelectedItem] = React.useState({});
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -234,114 +232,120 @@ export default function Report() {
   };
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-  const fetchDataQuestion = async () => {
-    ShowLoadingIcon();
+  const fetchData = async () => {
     await axios
-      .get("https://test-deploy-express.herokuapp.com/report/question-report")
+      .get("https://test-deploy-express.herokuapp.com/report/dashboard")
       .then((res) => {
-        const data = res.data.data;
-        setRows(data);
+        const totalActiveUser = res.data.data.totalActiveUser[0]["COUNT(*)"];
+        const oldestLog = res.data.data.oldestLog[0].createdAt;
+        const totalSession = res.data.data.totalSession[0]["COUNT(*)"];
+        const time =
+          moment(new Date()).diff(moment(oldestLog)) / (60 * 24 * 1000);
+        const _totalSession = res.data.data._totalSession[0]["COUNT(*)"];
+        const _totalActiveUser = res.data.data._totalActiveUser[0]["COUNT(*)"];
+        setOverviewData({
+          totalActiveUser,
+          userLastWeek: (
+            ((totalActiveUser - _totalActiveUser) * 100) /
+            _totalActiveUser
+          ).toFixed(2),
+          totalSession: totalSession,
+          logLastWeek: (
+            ((totalSession - _totalSession) * 100) /
+            _totalSession
+          ).toFixed(2),
+          averageSession: (time / totalSession).toFixed(2),
+          sessionLastWeek: (
+            (time / totalSession - time / _totalSession) *
+            100
+          ).toFixed(2),
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        HideLoadingIcon();
       });
-    HideLoadingIcon();
   };
-  const fetchDataUser = async () => {
+  const fetchDataNoCommentQuestion = async () => {
     ShowLoadingIcon();
     await axios
-      .get("https://test-deploy-express.herokuapp.com/report/user-report")
+      .get(
+        "https://test-deploy-express.herokuapp.com/question/no-comment-question"
+      )
       .then((res) => {
-        const data = res.data.data;
-        console.log(data);
-        setRows(data);
-      });
-    HideLoadingIcon();
-  };
-  const fetchDataAnswer = async () => {
-    ShowLoadingIcon();
-    await axios
-      .get("https://test-deploy-express.herokuapp.com/report/answer-report")
-      .then((res) => {
-        const data = res.data.data;
-        setRows(data);
-      });
+        setRows(res.data.data);
+        fetchData();
+      })
+      .catch((err) => HideLoadingIcon());
     HideLoadingIcon();
   };
   useEffect(() => {
-    fetchDataQuestion();
+    fetchDataNoCommentQuestion();
     return () => {};
   }, []);
-  const classesDropDown = useStylesDropDown();
-  const handleChange = (event) => {
-    setType(event.target.value);
-    if (event.target.value === "Question") {
-      fetchDataQuestion();
-    } else if (event.target.value === "User") {
-      fetchDataUser();
-    } else {
-      fetchDataAnswer();
-    }
-  };
-  const handleDeleteReportDetail = async () => {
-    ShowLoadingIcon();
-    setIsOpenDialogReportDetail(false);
-    await axios
-      .put("https://test-deploy-express.herokuapp.com/question", {
-        id: selectedItem.id,
-      })
-      .then((res) => {
-        HideLoadingIcon();
-      })
-      .catch((err) => {
-        HideLoadingIcon();
-      });
-      
-  };
-  const handleBanReportDetail = async ()=>{
-    ShowLoadingIcon();
-    setIsOpenDialogReportDetail(false);
-    await axios
-      .put("https://test-deploy-express.herokuapp.com/user", {
-        id: selectedItem.id,
-        status: 'deactive',
-      })
-      .then((res) => {
-        HideLoadingIcon();
-      })
-      .catch((err) => {
-        HideLoadingIcon();
-      });
-  }
-  const onCloseDialogReportDetail = () => {
-    setIsOpenDialogReportDetail(false);
-  };
-  const onOpenDialogReportDetail = (e, row) => {
-    setSelectedItem(row);
-    setIsOpenDialogReportDetail(true);
-  };
+
   const handleClickReportLink = (e, row) => {
-    if(type !== "User")
-      window.open(`https://togebetter.netlify.app/questions/${row.targetID}`);
-    else window.open(`https://togebetter.netlify.app/users/${row.targetID}`);
+      window.open(`https://togebetter.netlify.app/questions/${row.Id}`);
   };
-  
+
   return (
-    <div className="report-management">
+    <div className="help">
       <div className={classes.root}>
-        <Paper className={classes.paper}>
-          <div style={{ marginLeft: "8px" }}>
-            <FormControl className={classesDropDown.formControl}>
-              <InputLabel id="demo-simple-select-label">Type</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={type}
-                onChange={handleChange}
-              >
-                <MenuItem value={"Question"}>Question</MenuItem>
-                <MenuItem value={"Answer"}>Answer</MenuItem>
-                <MenuItem value={"User"}>User</MenuItem>
-              </Select>
-            </FormControl>
+        <div className="overview">
+          <div className="total-active-user">
+            <div className="overview-content">
+              <div className="icon">
+                <GroupIcon />
+              </div>
+              <div className="overview-text">
+                <h3>Total active user</h3>
+                <div className="value">{overviewData.totalActiveUser}</div>
+              </div>
+            </div>
+            <div className="compare-text">
+              Compare to last week :{" "}
+              <span style={{ color: "green" }}>
+                {overviewData.userLastWeek}%
+              </span>
+            </div>
           </div>
+          <div className="total-sessions">
+            <div className="overview-content">
+              <div className="icon">
+                <ExitToAppIcon />
+              </div>
+              <div className="overview-text">
+                <h3>Total sessions</h3>
+                <div className="value">{overviewData.totalSession}</div>
+              </div>
+            </div>
+            <div className="compare-text">
+              Compare to last week :{" "}
+              <span style={{ color: "green" }}>
+                {overviewData.logLastWeek}%
+              </span>{" "}
+            </div>
+          </div>
+          <div className="average-session-duration">
+            <div className="overview-content">
+              <div className="icon">
+                <TimerIcon />
+              </div>
+              <div className="overview-text">
+                <h3>Session Duration</h3>
+                <div className="value">{overviewData.averageSession}</div>
+              </div>
+            </div>
+            <div className="compare-text">
+              Compare to last week :{" "}
+              <span style={{ color: "green" }}>
+                {overviewData.sessionLastWeek}%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <Paper className={classes.paper}>
           <TableContainer>
             <Table
               className={classes.table}
@@ -369,8 +373,6 @@ export default function Report() {
                         tabIndex={-1}
                         key={row.name}
                       >
-                        {/* <TableCell align="left">{row.content}</TableCell> */}
-
                         <TableCell
                           component="th"
                           id={labelId}
@@ -378,10 +380,18 @@ export default function Report() {
                           // padding="none"
                           align="left"
                         >
-                          {row.message}
+                          {row.questionType}
                         </TableCell>
-
-                        <TableCell align="left">{row.username}</TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          // padding="none"
+                          align="left"
+                        >
+                          {row.content}
+                        </TableCell>
+                        <TableCell align="left">{row.lang}</TableCell>
                         <TableCell align="left">
                           {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
                         </TableCell>
@@ -392,20 +402,8 @@ export default function Report() {
                             }}
                             className="link-main-app"
                           >
-                            {type === "Answer" || type === "Question"
-                              ? `https://togebetter.netlify.app/questions/${row.targetID}`
-                              : `https://togebetter.netlify.app/users/${row.targetID}`}
+                            {`https://togebetter.netlify.app/questions/${row.Id}`} 
                           </span>
-                        </TableCell>
-                        <TableCell align="left">
-                          <Tooltip title="Detail" placement="top">
-                            <IconButton
-                              aria-label="delete"
-                              onClick={(e) => onOpenDialogReportDetail(e, row)}
-                            >
-                              <DetailsIcon />
-                            </IconButton>
-                          </Tooltip>
                         </TableCell>
                       </TableRow>
                     );
@@ -428,14 +426,6 @@ export default function Report() {
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Paper>
-        <DialogReportDetail
-          open={isOpenDialogReportDetail}
-          handleDelete={handleDeleteReportDetail}
-          handleBan={handleBanReportDetail}
-          onClose={onCloseDialogReportDetail}
-          type={type}
-          selectedItem={selectedItem}
-        />
       </div>
     </div>
   );

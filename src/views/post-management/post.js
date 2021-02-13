@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import clsx from "clsx";
-import { lighten, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -10,40 +9,12 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import GroupIcon from "@material-ui/icons/Group";
-import TimerIcon from "@material-ui/icons/Timer";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import FilterListIcon from "@material-ui/icons/FilterList";
+
 import moment from "moment";
 import axios from "axios";
 import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
 import SimpleDialogDemo from "../../components/buttonTriggerDialog";
-// function createData(name, calories, fat, carbs, protein) {
-//   return { name, calories, fat, carbs, protein };
-// }
-
-// const rows = [
-//   createData("Cupcake", 305, 3.7, 67, 4.3),
-//   createData("Donut", 452, 25.0, 51, 4.9),
-//   createData("Eclair", 262, 16.0, 24, 6.0),
-//   createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-//   createData("Gingerbread", 356, 16.0, 49, 3.9),
-//   createData("Honeycomb", 408, 3.2, 87, 6.5),
-//   createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-//   createData("Jelly Bean", 375, 0.0, 94, 0.0),
-//   createData("KitKat", 518, 26.0, 65, 7.0),
-//   createData("Lollipop", 392, 0.2, 98, 0.0),
-//   createData("Marshmallow", 318, 0, 81, 2.0),
-//   createData("Nougat", 360, 19.0, 9, 37.0),
-//   createData("Oreo", 437, 18.0, 63, 4.0),
-// ];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -75,7 +46,7 @@ const headCells = [
   {
     id: "name",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Question Type",
   },
   { id: "calories", numeric: true, disablePadding: false, label: "Content" },
@@ -106,14 +77,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          />
-        </TableCell>
+        
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -135,6 +99,9 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell padding="checkbox">
+          Action
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -148,71 +115,6 @@ EnhancedTableHead.propTypes = {
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
-};
-
-const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  highlight:
-    theme.palette.type === "light"
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  title: {
-    flex: "1 1 100%",
-  },
-}));
-
-const EnhancedTableToolbar = (props) => {
-  const classes = useToolbarStyles();
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          0 selected
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <SimpleDialogDemo handleDetele={props.handleDetele} />
-        </Tooltip>
-      ) : (
-        <></>
-      )}
-    </Toolbar>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -248,11 +150,7 @@ export default function Post() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
-  const [overviewData, setOverviewData]= React.useState({
-    totalActiveUser : 0,
-    totalSession : 0,
-    averageSession:0
-  });
+  
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -296,15 +194,9 @@ export default function Post() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const handleDetelePost = async () => {
-    ShowLoadingIcon();
-    await axios
-      .delete("https://test-deploy-express.herokuapp.com/question", {
-        id: selected,
-      })
-      .then((res) => {
-        fetchData();
-      });
+  const callBackDeleteSuccess = (item)=>{
+    const pRows = rows.filter(it=>it.Id !== item.Id);
+    setRows(pRows);
   };
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -317,23 +209,6 @@ export default function Post() {
       .then(async (res) => {
         const data = res.data.data;
         setRows(data);
-        await axios
-          .get("https://test-deploy-express.herokuapp.com/report/dashboard")
-          .then((res) => {
-           const totalActiveUser = res.data.data.totalActiveUser[0]['COUNT(*)'];
-           const numberOfLog = res.data.data.numberOfLog[0]['COUNT(*)'];
-          //  const oldestLog = res.data.data.oldest[0];
-           
-           setOverviewData({
-            totalActiveUser,
-            totalSession : numberOfLog,
-            averageSession: 400.5
-           })
-          })
-          .catch((err) => {
-            console.log(err);
-            HideLoadingIcon();
-          });
         HideLoadingIcon();
       });
   };
@@ -346,57 +221,6 @@ export default function Post() {
     <div className="post-management">
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <div className="overview">
-            <div className="total-active-user">
-              <div className="overview-content">
-                <div className="icon">
-                  <GroupIcon />
-                </div>
-                <div className="overview-text">
-                  <h3>Total active user</h3>
-                  <div className="value">{overviewData.totalActiveUser}</div>
-                </div>
-              </div>
-              <div className="compare-text">
-                Compare to last week :{" "}
-                <span style={{ color: "green" }}>+47%</span>
-              </div>
-            </div>
-            <div className="total-sessions">
-              <div className="overview-content">
-                <div className="icon">
-                  <ExitToAppIcon />
-                </div>
-                <div className="overview-text">
-                  <h3>Total sessions</h3>
-                  <div className="value">{overviewData.totalSession}</div>
-                </div>
-              </div>
-              <div className="compare-text">
-                Compare to last week :{" "}
-                <span style={{ color: "green" }}>+50%</span>{" "}
-              </div>
-            </div>
-            <div className="average-session-duration">
-              <div className="overview-content">
-                <div className="icon">
-                  <TimerIcon />
-                </div>
-                <div className="overview-text">
-                  <h3>Session Duration</h3>
-                  <div className="value">{overviewData.averageSession}</div>
-                </div>
-              </div>
-              <div className="compare-text">
-                Compare to last week :{" "}
-                <span style={{ color: "green" }}>+10%</span>
-              </div>
-            </div>
-          </div>
-          <EnhancedTableToolbar
-            numSelected={selected.length}
-            handleDetele={handleDetelePost}
-          />
           <TableContainer>
             <Table
               className={classes.table}
@@ -430,27 +254,24 @@ export default function Post() {
                         key={row.name}
                         selected={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                          />
-                        </TableCell>
+                        
                         <TableCell
                           component="th"
                           id={labelId}
                           scope="row"
-                          padding="none"
                         >
                           {row.questionType}
                         </TableCell>
-                        <TableCell align="right">{row.content}</TableCell>
+                        <TableCell align="right" style={{maxWidth:"250px"}}>{row.content}</TableCell>
                         <TableCell align="right">{+row.votes}</TableCell>
                         <TableCell align="right">
                           {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
                         </TableCell>
                         <TableCell align="right">
                           {moment(row.updatedAt).format("DD-MM-YYYY hh:mm:ss")}
+                        </TableCell>
+                        <TableCell padding="checkbox">
+                          <SimpleDialogDemo type='question' item={row} callBackDeleteSuccess={callBackDeleteSuccess}/>
                         </TableCell>
                       </TableRow>
                     );

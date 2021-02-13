@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -8,19 +8,53 @@ import {
 } from "@material-ui/core";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
+import axios from "axios";
+import moment from "moment";
 
 export default function DialogReportDetail(props) {
-  const { onClose, open,selectedItem } = props;
-  console.log(selectedItem,"selectedItem")
+  const { onClose, open, selectedItem } = props;
+  const [data, setData] = useState({
+    content: "",
+    belongTo: "",
+    username: "",
+    country: "",
+    email: "",
+    createdAt: "",
+  });
   const handleClose = () => {
     onClose();
   };
   useEffect(() => {
-    
-    return () => {
-      
+    if (open) {
+      if(props.type !== "User"){
+        axios.get(`https://test-deploy-express.herokuapp.com/question/${selectedItem.targetID}`).then(res=>{
+          const _data = res.data.data[0];
+          setData({
+            content: props.selectedItem.content,
+            belongTo: _data.username,
+            username: "",
+            country: "",
+            email: "",
+            createdAt: "",
+          });
+        });
+      }
+      else{
+        axios.get(`https://test-deploy-express.herokuapp.com/user/${selectedItem.targetID}`).then(res=>{
+          const _data = res.data.data[0];
+          setData({
+            content: "",
+            belongTo: "",
+            username: _data.username,
+            country: _data.country,
+            email: _data.email,
+            createdAt: moment(_data.createdAt).format('DD-MM-YYYY'),
+          });
+          });
+      }
     }
-  }, [])
+    return () => {};
+  }, [open,selectedItem]);
   return (
     <Dialog
       onClose={handleClose}
@@ -39,8 +73,7 @@ export default function DialogReportDetail(props) {
                 <div className="content">
                   <TextField
                     label="Content"
-                    defaultValue="Sample Data"
-                    value={props.content}
+                    value={data.content}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -49,8 +82,7 @@ export default function DialogReportDetail(props) {
                 <div class="belong-to">
                   <TextField
                     label="Belong to User"
-                    defaultValue="Sample Data"
-                    value={props.belongTo}
+                    value={data.belongTo}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -62,8 +94,7 @@ export default function DialogReportDetail(props) {
                 <div className="username">
                   <TextField
                     label="Username"
-                    defaultValue="Sample Data"
-                    value={props.username}
+                    value={data.username}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -72,8 +103,7 @@ export default function DialogReportDetail(props) {
                 <div class="email">
                   <TextField
                     label="Email"
-                    defaultValue="Sample Data"
-                    value={props.email}
+                    value={data.email}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -82,8 +112,7 @@ export default function DialogReportDetail(props) {
                 <div class="country">
                   <TextField
                     label="Country"
-                    defaultValue="Sample Data"
-                    value={props.country}
+                    value={data.country}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -92,8 +121,7 @@ export default function DialogReportDetail(props) {
                 <div class="created-at">
                   <TextField
                     label="Created At"
-                    defaultValue="Sample Data"
-                    value={props.createdAt}
+                    value={data.createdAt}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -116,15 +144,25 @@ export default function DialogReportDetail(props) {
           <Button onClick={handleClose} variant="outlined">
             Cancel
           </Button>
-          <div style={{width:"200px",display:"flex",justifyContent:"space-between"}}>
-            {props.type === "User" ?<Button
-              onClick={props.handleDelete}
-              color="secondary"
-              variant="outlined"
-            >
-              BAN
-            </Button> :<div style={{width:"90px",height:"1px"}}></div>}
-            
+          <div
+            style={{
+              width: "200px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            {props.type === "User" ? (
+              <Button
+                onClick={props.handleBan}
+                color="secondary"
+                variant="outlined"
+              >
+                BAN
+              </Button>
+            ) : (
+              <div style={{ width: "90px", height: "1px" }}></div>
+            )}
+
             <Button
               onClick={props.handleDelete}
               color="secondary"

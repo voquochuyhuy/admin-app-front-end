@@ -3,9 +3,24 @@ import Log from "./views/log/log";
 import User from "./views/user-management/user";
 import Menber from "./views/menber-management/menber";
 import Report from "./views/report/report";
+import Help from "./views/help/help";
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import { AccountBalance, CalendarToday, Event, LaptopChromebook } from "@material-ui/icons";
 var dashRoutes = [
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: <CalendarToday/>,
+    component: Help,
+    layout: ""
+  },
+  {
+    path: "/report",
+    name: "Report",
+    icon: <CalendarToday/>,
+    component: Report,
+    layout: ""
+  },
   {
     path: "/post-management",
     name: "Question",
@@ -34,12 +49,6 @@ var dashRoutes = [
     component: Log,
     layout: ""
   },
-  {
-    path: "/report",
-    name: "Report",
-    icon: <CalendarToday/>,
-    component: Report,
-    layout: ""
-  }
+  
 ];
 export default dashRoutes;
