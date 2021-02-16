@@ -9,6 +9,8 @@ import {
 import WarningIcon from "@material-ui/icons/Warning";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
+import { HideLoadingIcon, ShowLoadingIcon } from "../global/globalFunction";
+import axios from "axios";
 
 export default function DialogAddMember(props) {
   const { onClose, open } = props;
@@ -32,6 +34,25 @@ export default function DialogAddMember(props) {
       default:
         break;
     }
+  };
+  const handleClickOK = async () => {
+    ShowLoadingIcon();
+    await axios
+      .post("https://test-deploy-express.herokuapp.com/admin", {
+        username,
+        email,
+        password,
+        role: "Admin",
+      })
+      .then((res) => {
+        const data = res.data.data;
+        props.callBackAddSuccess(data);
+        onClose();
+        HideLoadingIcon();
+      })
+      .catch((err) => {
+        HideLoadingIcon();
+      });
   };
   return (
     <Dialog
@@ -90,11 +111,7 @@ export default function DialogAddMember(props) {
           <Button onClick={handleClose} variant="outlined">
             Cancel
           </Button>
-          <Button
-            onClick={props.handleDelete}
-            color="secondary"
-            variant="contained"
-          >
+          <Button onClick={handleClickOK} color="secondary" variant="contained">
             OK
           </Button>
         </div>

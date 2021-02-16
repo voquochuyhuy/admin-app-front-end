@@ -260,7 +260,7 @@ export default function Post() {
                           id={labelId}
                           scope="row"
                         >
-                          {row.questionType}
+                          {row.type}
                         </TableCell>
                         <TableCell align="right" style={{maxWidth:"250px"}}>{row.content}</TableCell>
                         <TableCell align="right">{+row.votes}</TableCell>

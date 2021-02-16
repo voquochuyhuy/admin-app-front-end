@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import {  makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -70,7 +70,6 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -92,9 +91,7 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
-        <TableCell padding="checkbox">
-          Action
-        </TableCell>
+        <TableCell padding="checkbox">Action</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -143,7 +140,9 @@ export default function Menber() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
-  const [isOpenAddMemberDialog, setIsOpenAddMemberDialog] = React.useState(false);
+  const [isOpenAddMemberDialog, setIsOpenAddMemberDialog] = React.useState(
+    false
+  );
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -190,17 +189,19 @@ export default function Menber() {
   const onClickAddMember = async () => {
     setIsOpenAddMemberDialog(true);
   };
-  const handleSaveMember = () =>{
-
-  };
-  const callBackDeleteSuccess = (item)=>{
-    const pRows = rows.filter(it=>it.id !== item.id);
+  const handleSaveMember = () => {};
+  const callBackDeleteSuccess = (item) => {
+    const pRows = rows.filter((it) => it.id !== item.id);
     setRows(pRows);
   };
-  const onCloseDialogAddMember = () =>{
+  const onCloseDialogAddMember = () => {
     setIsOpenAddMemberDialog(false);
-  }
- 
+  };
+  const callBackAddSuccess = (data) => {
+    const newRow = [...rows];
+    newRow.push(data);
+    setRows(newRow);
+  };
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
@@ -212,6 +213,7 @@ export default function Menber() {
         .get("https://test-deploy-express.herokuapp.com/admin/admin-list")
         .then((res) => {
           const data = res.data.data;
+          console.log(data);
           setRows(data);
           HideLoadingIcon();
         });
@@ -224,12 +226,18 @@ export default function Menber() {
     <div className="member-management">
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <div style={{ display: "flex", justifyContent: "flex-end",padding:"7px" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: "7px",
+            }}
+          >
             <Button className="add-member-button" onClick={onClickAddMember}>
               Add
             </Button>
           </div>
-          
+
           <TableContainer>
             <Table
               className={classes.table}
@@ -263,17 +271,21 @@ export default function Menber() {
                         key={row.name}
                         selected={isItemSelected}
                       >
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                        >
+                        <TableCell component="th" id={labelId} scope="row">
                           {row.email}
                         </TableCell>
                         <TableCell align="right">{row.username}</TableCell>
                         <TableCell align="right">{row.role}</TableCell>
                         <TableCell padding="checkbox">
-                          <SimpleDialogDemo type='member' item={row} callBackDeleteSuccess={callBackDeleteSuccess}/>
+                          {row.role === "Admin" ? (
+                            <SimpleDialogDemo
+                              type="member"
+                              item={row}
+                              callBackDeleteSuccess={callBackDeleteSuccess}
+                            />
+                          ) : (
+                            <></>
+                          )}
                         </TableCell>
                       </TableRow>
                     );
@@ -298,7 +310,7 @@ export default function Menber() {
         </Paper>
         <DialogAddMember
           open={isOpenAddMemberDialog}
-          handleDelete={handleSaveMember}
+          callBackAddSuccess={callBackAddSuccess}
           onClose={onCloseDialogAddMember}
         />
       </div>

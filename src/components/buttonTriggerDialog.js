@@ -41,8 +41,10 @@ export default function SimpleDialogDemo(props) {
           id : item.id
         }).then(res=>{
           HideLoadingIcon();
+          callBackDeleteSuccess(item);
         }).catch(err=>{
           HideLoadingIcon();
+          callBackDeleteSuccess(item);
         });;
         break;
 

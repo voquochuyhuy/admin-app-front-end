@@ -18,6 +18,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import moment from "moment";
 import axios from "axios";
 import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
+import { Button } from "@material-ui/core";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -287,6 +288,9 @@ export default function Help() {
   const handleClickReportLink = (e, row) => {
       window.open(`https://togebetter.netlify.app/questions/${row.Id}`);
   };
+  const onClickRefresh = ()=>{
+    window.location.reload(true);
+  };
 
   return (
     <div className="help">
@@ -346,6 +350,17 @@ export default function Help() {
         </div>
 
         <Paper className={classes.paper}>
+        <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: "7px",
+            }}
+          >
+            <Button color="primary" variant="contained" onClick={onClickRefresh}>
+              Refresh
+            </Button>
+          </div>
           <TableContainer>
             <Table
               className={classes.table}
@@ -380,7 +395,7 @@ export default function Help() {
                           // padding="none"
                           align="left"
                         >
-                          {row.questionType}
+                          {row.type}
                         </TableCell>
                         <TableCell
                           component="th"
