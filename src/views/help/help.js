@@ -286,9 +286,9 @@ export default function Help() {
   }, []);
 
   const handleClickReportLink = (e, row) => {
-      window.open(`https://togebetter.netlify.app/questions/${row.Id}`);
+    window.open(`https://togebetter.netlify.app/questions/${row.Id}`);
   };
-  const onClickRefresh = ()=>{
+  const onClickRefresh = () => {
     window.location.reload(true);
   };
 
@@ -350,16 +350,25 @@ export default function Help() {
         </div>
 
         <Paper className={classes.paper}>
-        <div
+          <div
             style={{
               display: "flex",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
               padding: "7px",
             }}
           >
-            <Button color="primary" variant="contained" onClick={onClickRefresh}>
-              Refresh
-            </Button>
+            <div>
+              <h3>Questions had no comment</h3>
+            </div>
+            <div>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={onClickRefresh}
+              >
+                Refresh
+              </Button>
+            </div>
           </div>
           <TableContainer>
             <Table
@@ -417,7 +426,7 @@ export default function Help() {
                             }}
                             className="link-main-app"
                           >
-                            {`https://togebetter.netlify.app/questions/${row.Id}`} 
+                            {`https://togebetter.netlify.app/questions/${row.Id}`}
                           </span>
                         </TableCell>
                       </TableRow>

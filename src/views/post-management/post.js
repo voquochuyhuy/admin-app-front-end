@@ -50,7 +50,7 @@ const headCells = [
     label: "Question Type",
   },
   { id: "calories", numeric: true, disablePadding: false, label: "Content" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Votes" },
+  // { id: "fat", numeric: true, disablePadding: false, label: "Votes" },
   {
     id: "carbs",
     numeric: true,
@@ -263,7 +263,7 @@ export default function Post() {
                           {row.type}
                         </TableCell>
                         <TableCell align="right" style={{maxWidth:"250px"}}>{row.content}</TableCell>
-                        <TableCell align="right">{+row.votes}</TableCell>
+                        {/* <TableCell align="right">{+row.votes}</TableCell> */}
                         <TableCell align="right">
                           {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
                         </TableCell>
