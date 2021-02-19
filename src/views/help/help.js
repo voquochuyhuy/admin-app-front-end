@@ -257,7 +257,7 @@ export default function Help() {
           ).toFixed(2),
           averageSession: (time / totalSession).toFixed(2),
           sessionLastWeek: (
-            (time / totalSession - time / _totalSession) *
+            (time / _totalSession - time / totalSession ) *
             100
           ).toFixed(2),
         });
@@ -358,7 +358,7 @@ export default function Help() {
             }}
           >
             <div>
-              <h3>Questions had no comment</h3>
+              <h3>Questions has no comment</h3>
             </div>
             <div>
               <Button

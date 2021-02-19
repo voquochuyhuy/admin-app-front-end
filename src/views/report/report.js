@@ -240,7 +240,6 @@ export default function Report() {
       .get("https://test-deploy-express.herokuapp.com/report/question-report")
       .then((res) => {
         const data = res.data.data;
-        console.log(data);
         setRows(data);
       });
     HideLoadingIcon();

@@ -361,7 +361,7 @@ export default function Log() {
                         </TableCell>
                         <TableCell align="right">{row.username}</TableCell>
                         <TableCell align="right">
-                          {moment(row.createdAt).format("DD-MM-YYYY hh:mm:ss")}
+                          {moment(row.createdAt).format("YYYY-MM-DD hh:mm:ss")}
                         </TableCell>
                       </TableRow>
                     );
