@@ -10,17 +10,13 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
 import axios from "axios";
 import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
 import { Switch } from "@material-ui/core";
 import SimpleDialogDemo from "../../components/buttonTriggerDialog";
-// import {db} from "../../firebase.js";
+import {db} from "../../firebase.js";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -192,6 +188,7 @@ export default function User() {
       return pIt;
     });
     const selectedItem = newState.filter((it) => it.id === row.id);
+    console.log(selectedItem,"selectedItem")
     ShowLoadingIcon();
     await axios
       .put("https://test-deploy-express.herokuapp.com/user", {
@@ -201,6 +198,13 @@ export default function User() {
       .then((res) => {
         setRows(newState);
         HideLoadingIcon();
+        db.collection("users").doc(selectedItem[0].id).update({
+          status:"deactive"
+        }).then(function() {
+          console.log("Document successfully update!");
+      }).catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
       })
       .catch((err) => {
         HideLoadingIcon();

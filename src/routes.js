@@ -6,11 +6,13 @@ import Report from "./views/report/report";
 import Help from "./views/help/help";
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import { AccountBalance, CalendarToday, Event, LaptopChromebook } from "@material-ui/icons";
+import DashboardIcon from '@material-ui/icons/Dashboard';
+
 var dashRoutes = [
   {
     path: "/dashboard",
     name: "Dashboard",
-    icon: <CalendarToday/>,
+    icon: <DashboardIcon/>,
     component: Help,
     layout: ""
   },
