@@ -16,7 +16,7 @@ import axios from "axios";
 import { ShowLoadingIcon, HideLoadingIcon } from "../../global/globalFunction";
 import { Switch } from "@material-ui/core";
 import SimpleDialogDemo from "../../components/buttonTriggerDialog";
-import {db} from "../../firebase.js";
+import { db } from "../../firebase.js";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -100,9 +100,7 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
-        <TableCell padding="checkbox">
-          Action
-        </TableCell>
+        <TableCell padding="checkbox">Action</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -166,8 +164,8 @@ export default function User() {
     setSelected([]);
   };
 
-  const callBackDeleteSuccess = (item)=>{
-    const pRows = rows.filter(it=>it.id !== item.id);
+  const callBackDeleteSuccess = (item) => {
+    const pRows = rows.filter((it) => it.id !== item.id);
     setRows(pRows);
   };
 
@@ -188,7 +186,6 @@ export default function User() {
       return pIt;
     });
     const selectedItem = newState.filter((it) => it.id === row.id);
-    console.log(selectedItem,"selectedItem")
     ShowLoadingIcon();
     await axios
       .put("https://test-deploy-express.herokuapp.com/user", {
@@ -198,13 +195,17 @@ export default function User() {
       .then((res) => {
         setRows(newState);
         HideLoadingIcon();
-        db.collection("users").doc(selectedItem[0].id).update({
-          status:"deactive"
-        }).then(function() {
-          console.log("Document successfully update!");
-      }).catch(function(error) {
-          console.error("Error removing document: ", error);
-      });
+        db.collection("users")
+          .doc(selectedItem[0].id)
+          .update({
+            status: "deactive",
+          })
+          .then(function () {
+            console.log("Document successfully update!");
+          })
+          .catch(function (error) {
+            console.error("Error removing document: ", error);
+          });
       })
       .catch((err) => {
         HideLoadingIcon();
@@ -212,7 +213,7 @@ export default function User() {
   };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
-  
+
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   const fetchData = async () => {
@@ -265,12 +266,7 @@ export default function User() {
                       key={row.name}
                       selected={isItemSelected}
                     >
-                      
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                      >
+                      <TableCell component="th" id={labelId} scope="row">
                         {row.email}
                       </TableCell>
                       <TableCell align="right">{row.username}</TableCell>
@@ -287,7 +283,11 @@ export default function User() {
                         />
                       </TableCell>
                       <TableCell padding="checkbox">
-                        <SimpleDialogDemo type='user' item={row} callBackDeleteSuccess={callBackDeleteSuccess}/>
+                        <SimpleDialogDemo
+                          type="user"
+                          item={row}
+                          callBackDeleteSuccess={callBackDeleteSuccess}
+                        />
                       </TableCell>
                     </TableRow>
                   );

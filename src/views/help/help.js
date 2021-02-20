@@ -188,15 +188,7 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
 }));
-const useStylesDropDown = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
+
 export default function Help() {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
@@ -205,7 +197,6 @@ export default function Help() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = React.useState([]);
-  const [type, setType] = React.useState("Question");
   const [overviewData, setOverviewData] = React.useState({
     totalActiveUser: 0,
     totalSession: 0,
@@ -263,7 +254,6 @@ export default function Help() {
         });
       })
       .catch((err) => {
-        console.log(err);
         HideLoadingIcon();
       });
   };

@@ -26,6 +26,7 @@ import {
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import DialogReportDetail from "../../components/dialogReportDetail";
+import { db } from "../../firebase";
 // import {db} from '../../firebase.js';
 
 function descendingComparator(a, b, orderBy) {
@@ -250,7 +251,6 @@ export default function Report() {
       .get("https://test-deploy-express.herokuapp.com/report/user-report")
       .then((res) => {
         const data = res.data.data;
-        console.log(data);
         setRows(data);
       });
     HideLoadingIcon();
@@ -284,11 +284,18 @@ export default function Report() {
     ShowLoadingIcon();
     setIsOpenDialogReportDetail(false);
     await axios
-      .put("https://test-deploy-express.herokuapp.com/question", {
-        id: selectedItem.id,
-      })
+      .delete(`https://test-deploy-express.herokuapp.com/question/${selectedItem.id}`)
       .then((res) => {
         HideLoadingIcon();
+        db.collection("questions")
+          .doc(selectedItem.id)
+          .delete()
+          .then(function () {
+            console.log("Document successfully delete!");
+          })
+          .catch(function (error) {
+            console.error("Error removing document: ", error);
+          });
       })
       .catch((err) => {
         HideLoadingIcon();

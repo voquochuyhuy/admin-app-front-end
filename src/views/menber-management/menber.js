@@ -213,7 +213,6 @@ export default function Menber() {
         .get("https://test-deploy-express.herokuapp.com/admin/admin-list")
         .then((res) => {
           const data = res.data.data;
-          console.log(data);
           setRows(data);
           HideLoadingIcon();
         });

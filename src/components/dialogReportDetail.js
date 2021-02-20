@@ -28,7 +28,6 @@ export default function DialogReportDetail(props) {
     if (open) {
       if(props.type !== "User"){
         axios.get(`https://test-deploy-express.herokuapp.com/question/${selectedItem.targetID}`).then(res=>{
-          console.log(selectedItem.targetID,res.data)
           const _data = res.data.data[0];
           setData({
             content: props.selectedItem.content,
