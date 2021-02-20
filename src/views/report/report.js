@@ -284,11 +284,12 @@ export default function Report() {
     ShowLoadingIcon();
     setIsOpenDialogReportDetail(false);
     await axios
-      .delete(`https://test-deploy-express.herokuapp.com/question/${selectedItem.id}`)
+      .delete(`https://test-deploy-express.herokuapp.com/question/${selectedItem.questionID}`)
       .then((res) => {
         HideLoadingIcon();
+        axios.delete(`https://test-deploy-express.herokuapp.com/report/${selectedItem.id}`)
         db.collection("questions")
-          .doc(selectedItem.id)
+          .doc(selectedItem.questionID)
           .delete()
           .then(function () {
             console.log("Document successfully delete!");
