@@ -287,7 +287,10 @@ export default function Report() {
       .delete(`https://test-deploy-express.herokuapp.com/question/${selectedItem.questionID}`)
       .then((res) => {
         HideLoadingIcon();
-        axios.delete(`https://test-deploy-express.herokuapp.com/report/${selectedItem.id}`)
+        axios.delete(`https://test-deploy-express.herokuapp.com/report/${selectedItem.id}`).then(()=>{
+          const newRows = rows.filter(it=>it.id !== selectedItem.id);
+          setRows(newRows);
+        })
         db.collection("questions")
           .doc(selectedItem.questionID)
           .delete()
