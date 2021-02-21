@@ -198,7 +198,7 @@ export default function User() {
         db.collection("users")
           .doc(selectedItem[0].id)
           .update({
-            status: "deactive",
+            status: selectedItem[0].status,
           })
           .then(function () {
             console.log("Document successfully update!");
